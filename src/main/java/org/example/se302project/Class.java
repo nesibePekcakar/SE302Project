@@ -15,6 +15,11 @@ public class Class implements IClass {
     }
 
     @Override
+    public String getClassName() {
+        return this.className;
+    }
+
+    @Override
     public void setClassroom(IClassroom classroom) {
         this.classroom = classroom;
     }
@@ -47,5 +52,20 @@ public class Class implements IClass {
     @Override
     public List<IStudent> getStudents() {
         return this.students;
+    }
+
+    // New methods
+
+    @Override
+    public int getRequiredCapacity() {
+        return students.size(); // The required capacity is the number of students in the class.
+    }
+
+    @Override
+    public boolean hasConflictingSchedule(IClassroom classroom) {
+        if (this.schedule == null || classroom.getSchedule() == null) {
+            return false; // No schedule to compare, assume no conflict.
+        }
+        return this.schedule.conflictsWith(classroom.getSchedule());
     }
 }

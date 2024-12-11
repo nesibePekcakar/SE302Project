@@ -9,4 +9,9 @@ public interface IClassroom {
     void setCapacity(int capacity);
     List<String> getAvailableTimes();
     void setAvailableTimes(List<String> availableTimes);
+
+    // New methods
+    ISchedule getSchedule();
+    void setSchedule(ISchedule schedule);
+    boolean isAvailableFor(ISchedule schedule);
 }
