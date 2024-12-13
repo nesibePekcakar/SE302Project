@@ -11,4 +11,5 @@ module org.example.se302project {
 
     opens org.example.se302project to javafx.fxml;
     exports org.example.se302project;
+
 }
