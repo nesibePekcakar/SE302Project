@@ -1,18 +1,23 @@
 package org.example.se302project;
 
+import java.util.ArrayList;
+
 public class Course {
     private String courseName;
-    private String startTime;
-    private int duration;
+    private String day;  // If you want to keep the day separately
+    private String startTime;  // Keeping it as String, assuming format like "HH:mm"
+    private int durationInLectureHours;  // Duration in lecture hours
     private String lecturer;
-    private int capacity;
-
-    public Course(String courseName, String startTime, int duration, String lecturer, int capacity) {
+    private int attendance;  // Renamed from capacity to students, assuming it reflects enrolled students
+    private ArrayList<String> students;
+    public Course(String courseName, String day, String startTime, int durationInLectureHours, String lecturer, int attendance, ArrayList<String> students) {
         this.courseName = courseName;
+        this.day = day;
         this.startTime = startTime;
-        this.duration = duration;
+        this.durationInLectureHours = durationInLectureHours;
         this.lecturer = lecturer;
-        this.capacity = capacity;
+        this.attendance = attendance;
+        this.students=students;
     }
 
     public String getCourseName() {
@@ -23,6 +28,14 @@ public class Course {
         this.courseName = courseName;
     }
 
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
     public String getStartTime() {
         return startTime;
     }
@@ -31,12 +44,12 @@ public class Course {
         this.startTime = startTime;
     }
 
-    public int getDuration() {
-        return duration;
+    public int getDurationInLectureHours() {
+        return durationInLectureHours;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setDurationInLectureHours(int durationInLectureHours) {
+        this.durationInLectureHours = durationInLectureHours;
     }
 
     public String getLecturer() {
@@ -47,16 +60,16 @@ public class Course {
         this.lecturer = lecturer;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getAttendance() {
+        return attendance;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public void setAttendance(int attendance) {
+        this.attendance = attendance;
     }
 
     @Override
     public String toString() {
-        return courseName + " by " + lecturer + " at " + startTime + " (" + duration + " mins, capacity: " + capacity + ")";
+        return courseName + " by " + lecturer + " on " + day + " at " + startTime + " (" + durationInLectureHours + " hours, " + attendance + " students)";
     }
 }

@@ -6,9 +6,9 @@ import java.util.List;
 public class RoomBookingTester {
     public static void main(String[] args) {
         // Step 1: Create classrooms
-        Classroom room1 = new Classroom("Room A", 30, Arrays.asList("9:00-10:00", "10:00-11:00"));
-        Classroom room2 = new Classroom("Room B", 50, Arrays.asList("9:00-10:00", "11:00-12:00"));
-        Classroom room3 = new Classroom("Room C", 20, Arrays.asList("10:00-11:00", "11:00-12:00"));
+        Classroom room1 = new Classroom("Room A", 30);
+        Classroom room2 = new Classroom("Room B", 50);
+        Classroom room3 = new Classroom("Room C", 20);
 
         // Step 2: Create schedules
         Schedule schedule1 = new Schedule();

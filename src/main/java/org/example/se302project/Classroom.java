@@ -9,10 +9,10 @@ public class Classroom implements IClassroom {
     private List<String> availableTimes;
     private ISchedule schedule; // Schedule for the classroom
 
-    public Classroom(String classroomName, int capacity,List<String> availableTimes) {
+    public Classroom(String classroomName, int capacity) {
         this.classroomName = classroomName;
         this.capacity = capacity;
-        this.availableTimes = availableTimes;
+        availableTimes= new ArrayList<>();
     }
 
     @Override
