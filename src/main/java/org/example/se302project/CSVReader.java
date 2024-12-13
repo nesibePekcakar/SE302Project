@@ -7,6 +7,12 @@ import java.util.List;
 public class CSVReader {
     public CSVReader() {
     }
+
+    /**
+     * Reads course information from a CSV file.
+     * @param filePath Path to the CSV file.
+     * @return List of Course objects.
+     */
     public static List<Course> readCourses(String filePath) {
         List<Course> courses = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -29,9 +35,6 @@ public class CSVReader {
                 String durationStr = fields[2].trim();
                 String lecturer = fields[3].trim();
                 String[] dayNstartTimeArr = dayNstartTime.split(" ");
-
-
-
 
                 // Initialize list for students
                 ArrayList<String> students = new ArrayList<>();
@@ -67,15 +70,10 @@ public class CSVReader {
         return courses;
     }
 
-
-
-
-
-
     /**
      * Reads classroom information from a CSV file.
      * @param filePath Path to the CSV file.
-     * @return List of ClassroomRead objects.
+     * @return List of Classroom objects.
      */
     public static List<Classroom> readClassrooms(String filePath) {
         List<Classroom> classrooms = new ArrayList<>();
@@ -94,7 +92,7 @@ public class CSVReader {
                     continue;
                 }
 
-                String classroomName = fields[0];
+                String classroomName = fields[0].trim();
                 int capacity = Integer.parseInt(fields[1].trim());
 
                 classrooms.add(new Classroom(classroomName, capacity));
@@ -112,8 +110,8 @@ public class CSVReader {
      * @param courses List of courses to write.
      * @param append Whether to append to the file or overwrite it.
      */
-    public static void writeCoursesToFile(List<Course> courses,  boolean append) {
-        String outputFilePath = "src/main/resources/org/example/se302project/Courses.cvs";
+    public static void writeCoursesToFile(List<Course> courses, boolean append) {
+        String outputFilePath = "src/main/resources/org/example/se302project/Courses.csv"; // Fix file extension
         File file = new File(outputFilePath);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
@@ -137,11 +135,13 @@ public class CSVReader {
         }
     }
 
-
-
-
+    /**
+     * Writes classroom information to a CSV file.
+     * @param classrooms List of classrooms to write.
+     * @param append Whether to append to the file or overwrite it.
+     */
     public static void writeClassroomsToFile(List<Classroom> classrooms, boolean append) {
-        String outputFilePath="src/main/resources/org/example/se302project/ClassroomCapacity.cvs";
+        String outputFilePath = "src/main/resources/org/example/se302project/ClassroomCapacity.csv"; // Fix file extension
         File file = new File(outputFilePath);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
@@ -162,6 +162,3 @@ public class CSVReader {
         }
     }
 }
-
-
-
