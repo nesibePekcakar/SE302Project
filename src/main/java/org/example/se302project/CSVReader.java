@@ -13,7 +13,7 @@ public class CSVReader {
      * @param filePath Path to the CSV file.
      * @return List of Course objects.
      */
-    public static List<Course> readCourses(String filePath) {
+    public static List<Course> InitialReadCourses(String filePath) {
         List<Course> courses = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -111,22 +111,41 @@ public class CSVReader {
      * @param append Whether to append to the file or overwrite it.
      */
     public static void writeCoursesToFile(List<Course> courses, boolean append) {
-        String outputFilePath = "src/main/resources/org/example/se302project/Courses.csv"; // Fix file extension
+        String userHome = System.getProperty("user.home");
+        String appDirectory = userHome + "/SE302Project";
+
+        // Ensure the directory exists
+        File directory = new File(appDirectory);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String outputFilePath = appDirectory + "/Courses.csv";
         File file = new File(outputFilePath);
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("Existing file deleted: " + outputFilePath);
+            } else {
+                System.err.println("Failed to delete the existing file.");
+            }
+        }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
             // Write header only if not appending and file does not already exist
             if (!append && !file.exists()) {
-                writer.write("Course;TimeToStart;DurationInLectureHours;Lecturer;Students\n");
+                writer.write("Course;Day;TimeToStart;DurationInLectureHours;Lecturer;Students\n");
             }
 
             // Write each course
             for (Course course : courses) {
+                String students = String.join(";", course.getStudents());
                 writer.write(course.getCourseName() + ";" +
+                        course.getDay() + ";" +
                         course.getStartTime() + ";" +
                         course.getDurationInLectureHours() + ";" +
                         course.getLecturer() + ";" +
-                        course.getAttendance() + "\n");
+                        course.getAttendance() + ";" +
+                        students + "\n");
             }
 
             System.out.println("Courses written to file: " + outputFilePath);
@@ -141,8 +160,25 @@ public class CSVReader {
      * @param append Whether to append to the file or overwrite it.
      */
     public static void writeClassroomsToFile(List<Classroom> classrooms, boolean append) {
-        String outputFilePath = "src/main/resources/org/example/se302project/ClassroomCapacity.csv"; // Fix file extension
+        String userHome = System.getProperty("user.home");
+        String appDirectory = userHome + "/SE302Project";
+
+        // Ensure the directory exists
+        File directory = new File(appDirectory);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String outputFilePath = appDirectory + "/ClassroomCapacity.csv";
         File file = new File(outputFilePath);
+
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("Existing file deleted: " + outputFilePath);
+            } else {
+                System.err.println("Failed to delete the existing file.");
+            }
+        }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
             // Write header only if not appending and file does not already exist

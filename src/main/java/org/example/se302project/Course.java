@@ -8,8 +8,12 @@ public class Course {
     private String startTime;  // Keeping it as String, assuming format like "HH:mm"
     private int durationInLectureHours;  // Duration in lecture hours
     private String lecturer;
-    private int attendance;  // Renamed from capacity to students, assuming it reflects enrolled students
+    private int attendance;// Renamed from capacity to students, assuming it reflects enrolled students
     private ArrayList<String> students;
+    private Classroom classroom;  // Added a classroom field (set later)
+    private Schedule schedule;  // Added a Schedule field (set later)
+
+
     public Course(String courseName, String day, String startTime, int durationInLectureHours, String lecturer, int attendance, ArrayList<String> students) {
         this.courseName = courseName;
         this.day = day;
@@ -18,6 +22,8 @@ public class Course {
         this.lecturer = lecturer;
         this.attendance = attendance;
         this.students=students;
+        this.classroom = null;
+        this.schedule = setSchedule();
     }
 
     public String getCourseName() {
@@ -66,6 +72,34 @@ public class Course {
 
     public void setAttendance(int attendance) {
         this.attendance = attendance;
+    }
+
+    public ArrayList<String> getStudents() {
+        return students;
+    }
+
+    // Setter for students (optional, if you need to update the student list dynamically)
+    public void setStudents(ArrayList<String> students) {
+        this.students = students;
+        this.attendance = (students != null) ? students.size() : 0; // Update attendance count automatically
+    }
+    public Classroom getClassroom() {
+        return classroom;
+    }
+
+    public void setClassroom(Classroom classroom) {
+        this.classroom = classroom;
+    }
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public Schedule setSchedule() {
+        ArrayList<String> times = new ArrayList<>();
+        times.add(getDay()); times.add(getStartTime());
+         Schedule schedule= new Schedule();
+        schedule .setScheduledTimes(times);
+        return schedule;
     }
 
     @Override

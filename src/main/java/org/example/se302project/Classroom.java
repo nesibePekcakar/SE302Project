@@ -48,7 +48,7 @@ public class Classroom implements IClassroom {
     // New methods
 
     @Override
-    public ISchedule getSchedule() {
+    public ISchedule getSchedule(){
         return this.schedule;
     }
 
