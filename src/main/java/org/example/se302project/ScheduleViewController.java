@@ -12,8 +12,16 @@ public class ScheduleViewController {
     @FXML
     private ListView<String> classroomListView;
 
-    private Schedule studentSchedule;
-    private Schedule classroomSchedule;
+    private Schedule studentSchedule= new Schedule();
+    private Schedule classroomSchedule= new Schedule();
+    CourseManager cm = new CourseManager();
+    private List<Classroom> classrooms= cm.ReadClassrooms(cm.getClassroomCapacityFilePath());
+    private List<Course> courses= cm.ReadCourses(cm.getCoursesFilePath());
+
+    @FXML
+    public void initialize() {
+        setSchedule(studentSchedule,classroomSchedule);
+    }
 
     public void setSchedule(Schedule studentSchedule, Schedule classroomSchedule) {
         this.studentSchedule = studentSchedule;
@@ -24,6 +32,8 @@ public class ScheduleViewController {
     }
 
     private void populateScheduleListView() {
+
+        scheduleCoursesAndClassrooms();
         // Populate the student schedule list view
         List<String> studentScheduledTimes = studentSchedule.getScheduledTimes();
         studentListView.getItems().addAll(studentScheduledTimes);
@@ -31,5 +41,21 @@ public class ScheduleViewController {
         // Populate the classroom schedule list view
         List<String> classroomScheduledTimes = classroomSchedule.getScheduledTimes();
         classroomListView.getItems().addAll(classroomScheduledTimes);
+    }
+    private void scheduleCoursesAndClassrooms() {
+        // Logic to schedule courses for students and classrooms
+        for (Course course : courses) {
+            String courseTime = course.getDay() + " " + course.getStartTime();
+
+            // Schedule each student for the course
+            for (String student : course.getStudents()) {
+                studentSchedule.addStudentSchedule(student, courseTime);
+            }
+
+            // Schedule each classroom for the course
+            for (Classroom classroom : classrooms) {
+                classroomSchedule.addClassroomSchedule(classroom.getClassroomName(), courseTime);
+            }
+        }
     }
 }

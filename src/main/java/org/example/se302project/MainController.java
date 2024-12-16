@@ -21,9 +21,7 @@ public class MainController {
     private List<Course> courses;
     private List<Classroom> classrooms;
 
-    // Schedules for students and classrooms
-    private Schedule studentSchedule = new Schedule();
-    private Schedule classroomSchedule = new Schedule();
+
 
     @FXML
     protected void onEnterAFile(ActionEvent event) {
@@ -55,11 +53,7 @@ public class MainController {
                     classrooms = csvReader.readClassrooms(selectedClassroomFile.getAbsolutePath());
                 }
 
-                // Schedule the courses and classrooms
-                scheduleCoursesAndClassrooms();
-
-                // Switch to the schedule view scene
-                switchToScheduleScene(event);
+                switchToMatchingScene(event);
 
             } else {
                 statusLabel.setText("No classroom capacity file selected.");
@@ -88,40 +82,7 @@ public class MainController {
         }
     }
 
-    private void scheduleCoursesAndClassrooms() {
-        // Logic to schedule courses for students and classrooms
-        for (Course course : courses) {
-            String courseTime = course.getDay() + " " + course.getStartTime();
 
-            // Schedule each student for the course
-            for (String student : course.getStudents()) {
-                studentSchedule.addStudentSchedule(student, courseTime);
-            }
-
-            // Schedule each classroom for the course
-            for (Classroom classroom : classrooms) {
-                classroomSchedule.addClassroomSchedule(classroom.getClassroomName(), courseTime);
-            }
-        }
-    }
-
-    private void switchToScheduleScene(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule-view.fxml"));
-            Parent root = loader.load();
-
-            // Pass the schedule data to the new scene
-            ScheduleViewController scheduleViewController = loader.getController();
-            scheduleViewController.setSchedule(studentSchedule, classroomSchedule);
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error loading schedule scene: " + e.getMessage());
-        }
-    }
 
     @FXML
     protected void onHelp(ActionEvent event) {

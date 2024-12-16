@@ -38,7 +38,11 @@ public class MatchingController {
     private TableColumn<Classroom, Integer> attendanceColumn;
 
     @FXML
-    private TableColumn<Classroom, String> assignedCourseColumn;  // Added column for showing assigned courses
+    private TableColumn<Classroom, String> assignedCourseColumn;
+
+    // Schedules for students and classrooms
+    private Schedule studentSchedule = new Schedule();
+    private Schedule classroomSchedule = new Schedule();
 
     CourseManager cm = new CourseManager();
     private List<Classroom> classrooms= cm.ReadClassrooms(cm.getClassroomCapacityFilePath());
@@ -122,24 +126,7 @@ public class MatchingController {
         return "Empty";  // Return if no course is assigned
     }
 
-    // Method to retrieve the assigned course for a given classroom
-    public void viewSchedules() {
-        try {
-            // Load the classroom schedules FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view-schedules.fxml"));
-            Parent root = loader.load();
 
-            // Create a new stage (window) for displaying schedules
-            Stage scheduleStage = new Stage();
-            scheduleStage.setTitle("View Schedules");
-            scheduleStage.setScene(new Scene(root));
-
-            // Show the new window
-            scheduleStage.show();
-        } catch (IOException e) {
-            showAlert("Error", "An error occurred while opening the schedules window: " + e.getMessage());
-        }
-    }
 
     // This method will be called when the "Edit Table" button is clicked
     public void editTable() {
@@ -235,7 +222,7 @@ public class MatchingController {
         showAlert("Edit Enabled", "You can now edit lecture column directly.");
     }
 
-    // new
+
     private void handleClassroomAssignmentEdit(Classroom classroom, String newCourseName) {
         // Find the course by name
         Course newCourse = getCourseByName(newCourseName);
@@ -268,6 +255,45 @@ public class MatchingController {
         tableView.refresh();
 
         showAlert("Success", "Classroom assignment updated successfully.");
+    }
+
+    // Method to retrieve the assigned course for a given classroom
+    public void viewSchedules(ActionEvent event) {
+
+            // Load the new scene (matching scene) from an FXML file or create a new layout
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule-view.fxml"));
+                Parent root = loader.load();
+
+
+                // Set the new scene to the current stage
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+
+                // Show the new scene
+                stage.show();
+            } catch (IOException e) {
+                System.err.println("Error loading matching scene: " + e.getMessage());
+            }
+    }
+
+
+    private void switchToScheduleScene(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule-view.fxml"));
+            Parent root = loader.load();
+
+            // Pass the schedule data to the new scene
+            ScheduleViewController scheduleViewController = loader.getController();
+            scheduleViewController.setSchedule(studentSchedule, classroomSchedule);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading schedule scene: " + e.getMessage());
+        }
     }
 
 
