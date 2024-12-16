@@ -14,8 +14,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
 
-import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -120,13 +122,22 @@ public class MatchingController {
         return "Empty";  // Return if no course is assigned
     }
 
+    private Stage stage;
+    private Scene scene;
 
-    // This method will be called when the "View Schedules" button is clicked
-    public void viewSchedules() {
-        // Logic to navigate to a new scene for viewing schedules
-        showAlert("View Schedules", "This button will show schedules.");
+    @FXML
+    private void viewSchedules(ActionEvent event) {
+        try {
+            // Load the view for student schedules
+            Parent root = FXMLLoader.load(getClass().getResource("student-schedule-view.fxml"));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
     // This method will be called when the "Edit Table" button is clicked
     public void editTable() {
         // Logic to allow the user to edit the table
