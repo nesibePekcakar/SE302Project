@@ -34,7 +34,7 @@ public class CourseManager {
                 ArrayList<String> students = new ArrayList<>();
 
                 // Start counting attendance (students)
-                for (int i = 5; i < fields.length; i++) {
+                for (int i = 6; i < fields.length; i++) {
                     String studentName = fields[i].trim();
 
                     // Skip empty student names
