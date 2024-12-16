@@ -18,9 +18,15 @@ public class MainController {
     @FXML
     private Label statusLabel;
 
+    private List<Course> courses;
+    private List<Classroom> classrooms;
+
+    // Schedules for students and classrooms
+    private Schedule studentSchedule = new Schedule();
+    private Schedule classroomSchedule = new Schedule();
+
     @FXML
     protected void onEnterAFile(ActionEvent event) {
-        // Create a new FileChooser for selecting the courses file
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select the CSV File for Courses");
         fileChooser.getExtensionFilters().add(
@@ -32,29 +38,28 @@ public class MainController {
         File selectedCoursesFile = fileChooser.showOpenDialog(stage);
 
         if (selectedCoursesFile != null) {
-            // Create a new FileChooser for selecting the classroom capacity file
             fileChooser.setTitle("Select the CSV File for Classroom Capacities");
 
-            // Open file chooser dialog for classrooms
             File selectedClassroomFile = fileChooser.showOpenDialog(stage);
 
             if (selectedClassroomFile != null) {
-                // Instantiate CSVReader to read the files
                 CSVReader csvReader = new CSVReader();
 
                 // Process the selected courses file
                 if (selectedCoursesFile.getName().toLowerCase().contains("courses")) {
-                    List<Course> courses = csvReader.InitialReadCourses(selectedCoursesFile.getAbsolutePath());
-                    csvReader.writeCoursesToFile(courses, true);  // Write courses to file
+                    courses = csvReader.InitialReadCourses(selectedCoursesFile.getAbsolutePath());
                 }
 
                 // Process the selected classroom capacity file
                 if (selectedClassroomFile.getName().toLowerCase().contains("classroomcapacity")) {
-                    List<Classroom> classrooms = csvReader.readClassrooms(selectedClassroomFile.getAbsolutePath());
-                    csvReader.writeClassroomsToFile(classrooms, true);  // Write classrooms to file
+                    classrooms = csvReader.readClassrooms(selectedClassroomFile.getAbsolutePath());
                 }
-                // If both files are successfully processed, switch the scene
-                switchToMatchingScene(event);
+
+                // Schedule the courses and classrooms
+                scheduleCoursesAndClassrooms();
+
+                // Switch to the schedule view scene
+                switchToScheduleScene(event);
 
             } else {
                 statusLabel.setText("No classroom capacity file selected.");
@@ -83,15 +88,47 @@ public class MainController {
         }
     }
 
-    @FXML
+    private void scheduleCoursesAndClassrooms() {
+        // Logic to schedule courses for students and classrooms
+        for (Course course : courses) {
+            String courseTime = course.getDay() + " " + course.getStartTime();
 
+            // Schedule each student for the course
+            for (String student : course.getStudents()) {
+                studentSchedule.addStudentSchedule(student, courseTime);
+            }
+
+            // Schedule each classroom for the course
+            for (Classroom classroom : classrooms) {
+                classroomSchedule.addClassroomSchedule(classroom.getClassroomName(), courseTime);
+            }
+        }
+    }
+
+    private void switchToScheduleScene(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule-view.fxml"));
+            Parent root = loader.load();
+
+            // Pass the schedule data to the new scene
+            ScheduleViewController scheduleViewController = loader.getController();
+            scheduleViewController.setSchedule(studentSchedule, classroomSchedule);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading schedule scene: " + e.getMessage());
+        }
+    }
+
+    @FXML
     protected void onHelp(ActionEvent event) {
         try {
-            // Load the help-view.fxml file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("help-view.fxml"));
             Parent root = loader.load();
 
-            // Set up the scene and stage
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -104,4 +141,5 @@ public class MainController {
             }
         }
     }
+
 }

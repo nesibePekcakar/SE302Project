@@ -41,4 +41,15 @@ public class Schedule implements ISchedule {
     public void removeScheduledTime(String time) {
         this.scheduledTimes.remove(time);
     }
+
+    // Add a method to add scheduled time for both students and classrooms
+    public void addStudentSchedule(String studentName, String time) {
+        // Add the schedule for the student
+        this.scheduledTimes.add(studentName + ": " + time);
+    }
+
+    public void addClassroomSchedule(String classroomName, String time) {
+        // Add the schedule for the classroom
+        this.scheduledTimes.add(classroomName + ": " + time);
+    }
 }
