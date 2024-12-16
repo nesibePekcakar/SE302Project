@@ -49,7 +49,7 @@ public class ScheduleViewController {
 
             // Schedule each student for the course
             for (String student : course.getStudents()) {
-                studentSchedule.addStudentSchedule(student, courseTime);
+                studentSchedule.addStudentSchedule(student, course.getCourseName(), courseTime);
             }
 
             // Schedule each classroom for the course

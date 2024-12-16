@@ -26,7 +26,6 @@ public class Student implements IStudent {
     public List<IClass> getClasses() {
         return this.classes;
     }
-
     @Override
     public void enrollInClass(IClass classObj) {
         this.classes.add(classObj);
