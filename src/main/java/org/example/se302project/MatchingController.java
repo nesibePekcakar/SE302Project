@@ -122,22 +122,25 @@ public class MatchingController {
         return "Empty";  // Return if no course is assigned
     }
 
-    private Stage stage;
-    private Scene scene;
-
-    @FXML
-    private void viewSchedules(ActionEvent event) {
+    // Method to retrieve the assigned course for a given classroom
+    public void viewSchedules() {
         try {
-            // Load the view for student schedules
-            Parent root = FXMLLoader.load(getClass().getResource("student-schedule-view.fxml"));
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            // Load the classroom schedules FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view-schedules.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage (window) for displaying schedules
+            Stage scheduleStage = new Stage();
+            scheduleStage.setTitle("View Schedules");
+            scheduleStage.setScene(new Scene(root));
+
+            // Show the new window
+            scheduleStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            showAlert("Error", "An error occurred while opening the schedules window: " + e.getMessage());
         }
     }
+
     // This method will be called when the "Edit Table" button is clicked
     public void editTable() {
         // Logic to allow the user to edit the table

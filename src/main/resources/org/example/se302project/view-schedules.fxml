@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.ScheduleViewController">
+    <children>
+        <!-- TableView to display classroom schedules -->
+        <TableView fx:id="classroomTableView" prefHeight="400.0" prefWidth="600.0">
+            <columns>
+                <TableColumn fx:id="classroomColumn" text="Classroom" prefWidth="200.0"/>
+                <TableColumn fx:id="capacityColumn" text="Capacity" prefWidth="100.0"/>
+                <TableColumn fx:id="assignedCourseColumn" text="Assigned Course" prefWidth="200.0"/>
+                <TableColumn fx:id="attendanceColumn" text="Attendance" prefWidth="100.0"/>
+            </columns>
+        </TableView>
+
+        <Button text="Back" onAction="#goBack" prefWidth="100.0"/>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+</VBox>
