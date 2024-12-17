@@ -3,6 +3,7 @@ package org.example.se302project;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScheduleViewController {
@@ -57,5 +58,23 @@ public class ScheduleViewController {
                 classroomSchedule.addClassroomSchedule(classroom.getClassroomName(), courseTime);
             }
         }
+
     }
+    private void addCourseToEmptySlot(Schedule studentSchedule, Course course) {
+        String courseDay = course.getDay();
+        String courseTime = course.getStartTime();
+        String courseSlot = courseDay + " " + courseTime;
+
+        for (String studentName : course.getStudents()) {
+            List<String> scheduledTimes = studentSchedule.getScheduledTimes();
+
+            if (scheduledTimes.contains(courseSlot)) {
+                System.out.println("The slot " + courseSlot + " is already occupied for student " + studentName);
+            } else {
+                studentSchedule.addStudentSchedule(studentName, course.getCourseName(), courseSlot);
+                System.out.println("Added course '" + course.getCourseName() + "' for " + studentName + " at " + courseSlot);
+            }
+        }
+    }
+
 }
