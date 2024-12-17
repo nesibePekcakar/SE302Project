@@ -6,20 +6,23 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+
+import javafx.scene.Node;
+
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.cell.PropertyValueFactory;
+
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
+
 
 import java.io.IOException;
 import java.io.FileWriter;
-import java.io.IOException;
+
 import java.util.List;
 import java.util.Map;
 
@@ -248,8 +251,7 @@ public class MatchingController {
         }
         roomAssignments.put(newCourseName, classroom.getClassroomName());
 
-        // Update classroom's assigned capacity dynamically
-        classroom.setCapacity(newCourse.getAttendance());
+
 
         // Refresh the table to reflect the changes
         tableView.refresh();
@@ -262,7 +264,7 @@ public class MatchingController {
 
             // Load the new scene (matching scene) from an FXML file or create a new layout
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule.fxml"));
                 Parent root = loader.load();
 
 
