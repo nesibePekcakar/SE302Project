@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Student implements IStudent {
     private String name;
-    private List<IClass> classes;
+    private List<Course> classes;
 
     public Student(String name) {
         this.name = name;
@@ -23,16 +23,16 @@ public class Student implements IStudent {
     }
 
     @Override
-    public List<IClass> getClasses() {
+    public List<Course> getClasses() {
         return this.classes;
     }
     @Override
-    public void enrollInClass(IClass classObj) {
+    public void enrollInClass(Course classObj) {
         this.classes.add(classObj);
     }
 
     @Override
-    public void dropClass(IClass classObj) {
+    public void dropClass(Course classObj) {
         this.classes.remove(classObj);
     }
 }

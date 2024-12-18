@@ -6,25 +6,24 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-
 import javafx.scene.Node;
-
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileWriter;
-
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MatchingController {
 
@@ -43,31 +42,27 @@ public class MatchingController {
     @FXML
     private TableColumn<Classroom, String> assignedCourseColumn;
 
-    // Schedules for students and classrooms
-    private Schedule studentSchedule = new Schedule();
-    private Schedule classroomSchedule = new Schedule();
 
     CourseManager cm = new CourseManager();
-    private List<Classroom> classrooms= cm.ReadClassrooms(cm.getClassroomCapacityFilePath());
-    private List<Course> courses= cm.ReadCourses(cm.getCoursesFilePath());
-    RoomBooking rb = new RoomBooking(classrooms,courses);
-    private Map<String, String> roomAssignments;
+    private List<Classroom> classrooms = cm.ReadClassrooms(cm.getClassroomCapacityFilePath());
+    private List<Course> courses = cm.ReadCourses(cm.getCoursesFilePath());
 
+    RoomBooking rb = new RoomBooking(classrooms, courses);
 
+    // Adjusted to store the assigned courses for each classroom
+    private Map<String, List<String>> roomAssignments = new HashMap<>();
 
     @FXML
     public void initialize() {
         setData();
     }
 
-
     // Method to initialize the controller with the matched data
     public void setData() {
-        roomAssignments = rb.assignRoomsToAllClasses();
-        // Populate the table with the classroom data
+        roomAssignments = rb.assignRoomsToAllClasses(); // Assuming this now returns Map<String, List<String>>
+        saveMatchingToCSV();
         populateTable();
     }
-
     private void populateTable() {
         // Create an ObservableList for the classrooms
         ObservableList<Classroom> classroomList = FXCollections.observableArrayList(classrooms);
@@ -81,11 +76,15 @@ public class MatchingController {
 
         // Add the "Assigned Course" column to show matched course names
         assignedCourseColumn.setCellValueFactory(cellData -> {
-            // For each classroom, get the assigned course from the roomAssignments map
+            // For each classroom, get the assigned courses from the roomAssignments map
             String classroomName = cellData.getValue().getClassroomName();
-            String assignedCourse = getAssignedCourseForClassroom(classroomName);
-            return new javafx.beans.property.SimpleStringProperty(assignedCourse);
+            List<String> assignedCourses = roomAssignments.get(classroomName);
+            String assignedCourseNames = (assignedCourses != null && !assignedCourses.isEmpty())
+                    ? String.join(", ", assignedCourses) : "Empty";
+            return new javafx.beans.property.SimpleStringProperty(assignedCourseNames);
         });
+
+
         // Set the attendance column to show attendance based on the associated Course
         attendanceColumn.setCellValueFactory(cellData -> {
             // Get the course assigned to the classroom (you may need to adjust this depending on your data model)
@@ -108,6 +107,9 @@ public class MatchingController {
         tableView.setItems(classroomList);
     }
 
+
+
+
     // Helper method to get the Course object by course name
     private Course getCourseByName(String courseName) {
         for (Course course : courses) {
@@ -118,39 +120,27 @@ public class MatchingController {
         return null;  // Return null if the course is not found
     }
 
-
     // Method to retrieve the assigned course for a given classroom
     private String getAssignedCourseForClassroom(String classroomName) {
-        for (Map.Entry<String, String> entry : roomAssignments.entrySet()) {
-            if (entry.getValue().equals(classroomName)) {
-                return entry.getKey();  // Return the course name
-            }
-        }
-        return "Empty";  // Return if no course is assigned
+        List<String> assignedCourses = roomAssignments.get(classroomName);
+        return (assignedCourses != null && !assignedCourses.isEmpty()) ? assignedCourses.get(0) : "Empty";
     }
-
-
 
     // This method will be called when the "Edit Table" button is clicked
     public void editTable() {
-        // Logic to allow the user to edit the table
         enableTableEditing();
     }
 
     // This method will be called when the "Download as File" button is clicked
-
     public void downloadAsFile() {
-        // Create a FileChooser to allow the user to select a save location
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Table Data");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         fileChooser.setInitialFileName("classroom_assignments.csv");
 
-        // Show the save file dialog
         java.io.File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
         if (file != null) {
             try (FileWriter writer = new FileWriter(file)) {
-                // Write the table data to the file
                 writeTableDataToCSV(writer);
                 showAlert("Download Successful", "The table data has been successfully saved to: " + file.getAbsolutePath());
             } catch (IOException e) {
@@ -158,9 +148,10 @@ public class MatchingController {
             }
         }
     }
+
     private void writeTableDataToCSV(FileWriter writer) throws IOException {
         // Write the header row
-        writer.write("Classroom,Capacity,Attendance,Assigned Course\n");
+        writer.write("Classroom,Capacity,Attendance,Assigned Courses\n");
 
         // Write each row of data
         for (Classroom classroom : tableView.getItems()) {
@@ -168,33 +159,40 @@ public class MatchingController {
             int capacity = classroom.getCapacity();
             int attendance = 0;
 
-            // Get the assigned course name and its attendance
-            String assignedCourse = getAssignedCourseForClassroom(classroomName);
-            if (assignedCourse != null && !assignedCourse.equals("Empty")) {
-                Course course = getCourseByName(assignedCourse);
-                if (course != null) {
-                    attendance = course.getAttendance();
+            // Get the assigned courses for the classroom from roomAssignments
+            List<String> assignedCourses = roomAssignments.get(classroomName);
+
+            // If there are no assigned courses, set assignedCourses to an empty list
+            if (assignedCourses == null) {
+                assignedCourses = new ArrayList<>();
+            }
+
+            String assignedCourseNames = (assignedCourses.isEmpty())
+                    ? "\"Empty\""
+                    : "\"" + String.join(", ", assignedCourses) + "\"";
+
+            // For the first course in the list (if exists), get the attendance value
+            if (!assignedCourses.isEmpty()) {
+                Course assignedCourse = getCourseByName(assignedCourses.get(0));
+                if (assignedCourse != null) {
+                    attendance = assignedCourse.getAttendance();
                 }
             }
 
             // Write data in CSV format
-            writer.write(String.format("%s,%d,%d,%s\n", classroomName, capacity, attendance, assignedCourse));
+            writer.write(String.format("%s,%d,%d,%s\n", classroomName, capacity, attendance, assignedCourseNames));
         }
     }
+
 
 
 
     // This method will be called when the "Back" button is clicked
     public void back() {
         try {
-            // Load the hello-view.fxml file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
             Parent root = loader.load();
-
-            // Get the current stage (the window)
             Stage stage = (Stage) tableView.getScene().getWindow();
-
-            // Set the new scene to the stage (this will show the hello-view.fxml)
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -202,56 +200,48 @@ public class MatchingController {
             showAlert("Error", "An error occurred while loading the previous screen: " + e.getMessage());
         }
     }
-    // new
+
     @FXML
     public void enableTableEditing() {
-        // Ensure the column is editable
         assignedCourseColumn.setEditable(true);
-
-        // Set cell factory to allow editing with text field
         assignedCourseColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        // Handle commit action
         assignedCourseColumn.setOnEditCommit(event -> {
             Classroom classroom = event.getRowValue();
             String newCourseName = event.getNewValue();
             handleClassroomAssignmentEdit(classroom, newCourseName);
         });
 
-        // Enable editing on the table
         tableView.setEditable(true);
-
-        // Notify user
-        showAlert("Edit Enabled", "You can now edit lecture column directly.");
+        showAlert("Edit Enabled", "You can now edit the lecture column directly.");
     }
 
-
     private void handleClassroomAssignmentEdit(Classroom classroom, String newCourseName) {
-        // Find the course by name
         Course newCourse = getCourseByName(newCourseName);
         if (newCourse == null) {
             showAlert("Error", "The specified course does not exist.");
-            tableView.refresh(); // Reset to avoid invalid data in the column
+            tableView.refresh();
             return;
         }
 
-        // Check if the classroom capacity can accommodate the course attendance
         if (newCourse.getAttendance() > classroom.getCapacity()) {
             showAlert("Error", "Insufficient capacity: " +
                     "Classroom '" + classroom.getClassroomName() +
                     "' cannot accommodate " + newCourse.getAttendance() + " students.");
-            tableView.refresh(); // Reset to avoid invalid data in the table
-            return; // Exit the method to prevent assignment
+            tableView.refresh();
+            return;
         }
 
         // Update the roomAssignments map
-        String oldCourseName = getAssignedCourseForClassroom(classroom.getClassroomName());
-        if (oldCourseName != null && !oldCourseName.equals("Empty")) {
-            roomAssignments.remove(oldCourseName);
-        }
-        roomAssignments.put(newCourseName, classroom.getClassroomName());
+        String classroomName = classroom.getClassroomName();
+        List<String> assignedCourses = roomAssignments.getOrDefault(classroomName, new ArrayList<>());
 
+        // Remove old course if exists
+        assignedCourses.removeIf(course -> course.equals(getAssignedCourseForClassroom(classroomName)));
 
+        // Add new course
+        assignedCourses.add(newCourseName);
+        roomAssignments.put(classroomName, assignedCourses);
 
         // Refresh the table to reflect the changes
         tableView.refresh();
@@ -261,47 +251,23 @@ public class MatchingController {
 
     // Method to retrieve the assigned course for a given classroom
     public void viewSchedules(ActionEvent event) {
-
-            // Load the new scene (matching scene) from an FXML file or create a new layout
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule.fxml"));
-                Parent root = loader.load();
-
-
-                // Set the new scene to the current stage
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setScene(new Scene(root));
-
-                // Show the new scene
-                stage.show();
-            } catch (IOException e) {
-                System.err.println("Error loading matching scene: " + e.getMessage());
-            }
-    }
-
-
-    private void switchToScheduleScene(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("schedule.fxml"));
             Parent root = loader.load();
-
-            // Pass the schedule data to the new scene
-            ScheduleViewController scheduleViewController = loader.getController();
-            scheduleViewController.setSchedule(studentSchedule, classroomSchedule);
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-
             stage.show();
         } catch (IOException e) {
-            System.err.println("Error loading schedule scene: " + e.getMessage());
+            System.err.println("Error loading matching scene: " + e.getMessage());
         }
     }
 
+    public void saveMatchingToCSV() {
+        String filePath = cm.getMatchingFilePath(); // You can change the file path or use a file chooser
+        CourseManager.writeRoomAssignmentsToCSV(roomAssignments, filePath);
+        showAlert("Save Successful", "Saved Successfully");
+    }
 
-
-
-    // Helper method to display a simple alert box for testing the button actions
     private void showAlert(String title, String message) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);
