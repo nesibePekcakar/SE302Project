@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.se302project.AddStudentController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <children>
+
+        <Label layoutX="220.0" layoutY="30.0" text="Add Student">
+            <font>
+                <Font name="Arial Bold" size="20.0" />
+            </font>
+        </Label>
+
+
+        <Label layoutX="50.0" layoutY="100.0" text="Student Name:" />
+        <TextField fx:id="studentNameField" layoutX="150.0" layoutY="95.0" prefWidth="300.0" />
+
+
+        <Label layoutX="50.0" layoutY="150.0" text="Course Name:" />
+        <TextField fx:id="courseNameField" layoutX="150.0" layoutY="145.0" prefWidth="300.0" />
+
+
+        <Label layoutX="50.0" layoutY="200.0" text="Hours:" />
+        <TextField fx:id="hoursField" layoutX="150.0" layoutY="195.0" prefWidth="300.0" />
+
+
+        <Button fx:id="addStudentButton" layoutX="150.0" layoutY="250.0" text="Add Student" />
+        <Button fx:id="resetButton" layoutX="280.0" layoutY="250.0" text="Reset" />
+
+        <Button fx:id="backButton" layoutX="410.0" layoutY="250.0" text="Back" />
+    </children>
+</AnchorPane>

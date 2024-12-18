@@ -1,6 +1,9 @@
 package org.example.se302project;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.se302project.ScheduleViewController;
@@ -10,7 +13,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 
 
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,9 @@ public class ScheduleViewController {
     @FXML
     private MenuItem studentsAction1;
 
+    @FXML
+    private Button addStudentButton;
+
     private VBox root;
     private boolean isInitialized= false;
 
@@ -40,7 +46,8 @@ public class ScheduleViewController {
         if (!isInitialized) {
             isInitialized = true;
             loadData();
-            configureMenuButtons(); // Call any initialization logic like setting up menu buttons
+            configureMenuButtons();
+            addStudentButton.setOnAction(e -> navigateToAddStudent(e));// Call any initialization logic like setting up menu buttons
         }
     }
     private void loadData() {
@@ -119,6 +126,27 @@ public class ScheduleViewController {
         alert.setHeaderText("All Students");
         alert.setContentText(studentsList.toString());
         alert.showAndWait();
+    }
+
+    private void navigateToAddStudent(javafx.event.ActionEvent event) {
+        try {
+            // Load the Add Student FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addStudent-view.fxml"));
+            Parent addStudentRoot = loader.load();
+
+            // Set up the new scene
+            Scene addStudentScene = new Scene(addStudentRoot);
+
+            // Get the current stage and set the new scene
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(addStudentScene);
+            stage.setTitle("Add Student");
+            stage.show();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            // Handle the exception (show an alert or log the error)
+        }
     }
 }
 

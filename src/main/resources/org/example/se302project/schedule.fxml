@@ -50,7 +50,7 @@
          <children>
             <Button mnemonicParsing="false" text="Download" />
             <Button mnemonicParsing="false" text="Add Course" />
-            <Button mnemonicParsing="false" text="Add Student" />
+            <Button fx:id="addStudentButton" mnemonicParsing="false" text="Add Student" />
             <Button mnemonicParsing="false" text="Back" />
          </children>
          <padding>
