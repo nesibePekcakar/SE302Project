@@ -108,7 +108,7 @@ public class ScheduleViewController {
         return new ArrayList<>(uniqueStudents); // Convert back to a List
     }
 
-    private WeeklySchedule CreateStudentSchedule(String studentName) {
+    /*private WeeklySchedule CreateStudentSchedule(String studentName) {
         // Retrieve the list of courses the student is enrolled in
         List<Course> studentClasses = getStudentClasses(studentName);
         String monday = "", tuesday = "", wednesday = "", thursday = "", friday = "";
@@ -139,7 +139,69 @@ public class ScheduleViewController {
         }
 
         return new WeeklySchedule(monday, tuesday, wednesday, thursday, friday);
+    }*/
+
+    private WeeklySchedule CreateStudentSchedule(String studentName) {
+
+        List<String> timeSlots = Arrays.asList(
+                "08:30", "09:25", "10:20", "11:15", "12:10",
+                "13:05", "14:00", "14:55", "15:50"
+        );
+
+
+        Map<String, String[]> dailySchedules = new HashMap<>();
+        dailySchedules.put("Monday", new String[timeSlots.size()]);
+        dailySchedules.put("Tuesday", new String[timeSlots.size()]);
+        dailySchedules.put("Wednesday", new String[timeSlots.size()]);
+        dailySchedules.put("Thursday", new String[timeSlots.size()]);
+        dailySchedules.put("Friday", new String[timeSlots.size()]);
+
+
+        List<Course> studentClasses = getStudentClasses(studentName);
+
+
+        for (Course course : studentClasses) {
+            String classDay = course.getDay();
+            String classTime = course.getStartTime();
+            String className = course.getCourseName();
+
+
+            String[] scheduleForDay = dailySchedules.get(classDay);
+            if (scheduleForDay != null) {
+                int timeIndex = timeSlots.indexOf(classTime);
+                if (timeIndex >= 0) {
+                    scheduleForDay[timeIndex] = className;
+                }
+            }
+        }
+
+
+        String monday = formatDaySchedule(dailySchedules.get("Monday"), timeSlots);
+        String tuesday = formatDaySchedule(dailySchedules.get("Tuesday"), timeSlots);
+        String wednesday = formatDaySchedule(dailySchedules.get("Wednesday"), timeSlots);
+        String thursday = formatDaySchedule(dailySchedules.get("Thursday"), timeSlots);
+        String friday = formatDaySchedule(dailySchedules.get("Friday"), timeSlots);
+
+
+        return new WeeklySchedule(monday, tuesday, wednesday, thursday, friday);
     }
+
+    private String formatDaySchedule(String[] scheduleForDay, List<String> timeSlots) {
+        StringBuilder formattedSchedule = new StringBuilder();
+
+        for (int i = 0; i < timeSlots.size(); i++) {
+            String time = timeSlots.get(i);
+            String courseName = scheduleForDay[i];
+            if (courseName != null) {
+                formattedSchedule.append(time).append(" - ").append(courseName).append("\n");
+            } else {
+                formattedSchedule.append(time).append(" - \n");
+            }
+        }
+
+        return formattedSchedule.toString();
+    }
+
 
     private List<Course> getStudentClasses(String name) {
         List<Course> studentCourses = new ArrayList<>();
