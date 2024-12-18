@@ -291,79 +291,136 @@ public class ScheduleViewController {
 
     public void addCourse() {
         System.out.println("Adding new course...");
-            String selectedStudent = studentsChoiceBox.getValue();
-            String selectedClassroom = classroomsChoiceBox.getValue();
+        String selectedStudent = studentsChoiceBox.getValue();
+        String selectedClassroom = classroomsChoiceBox.getValue();
 
-            if (selectedStudent == null || selectedClassroom == null) {
-                System.out.println("Please select a student and a classroom first.");
-                return; // Eğer seçim yapılmamışsa işlemi durdur
-            }
-
-
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Add Course");
-            dialog.setHeaderText("Enter Course Information");
-            dialog.setContentText("Enter course name: , day: , start time: , duration: ,lecturer name:");
-
-            Optional<String> result = dialog.showAndWait();
-            if (result.isEmpty()) {
-                System.out.println("Course creation cancelled.");
-                return;
-            }
-
-
-            String[] courseDetails = result.get().split(",");
-            if (courseDetails.length < 4) {
-                System.out.println("Invalid input format. Expected: courseName, day, startTime, duration, lecturer");
-                return;
-            }
-
-            String courseName = courseDetails[0].trim();
-            String courseDay = courseDetails[1].trim();
-            String courseTime = courseDetails[2].trim();
-            int courseDuration;
-            try {
-                courseDuration = Integer.parseInt(courseDetails[3].trim());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid duration format. Please enter a valid number.");
-                return;
-            }
-            String lecturer = courseDetails.length > 4 ? courseDetails[4].trim() : "Unknown Lecturer";
-
-
-            String courseSlot = courseDay + " " + courseTime;
-
-
-            boolean studentConflict = courses.stream()
-                    .filter(course -> course.getStudents().contains(selectedStudent))
-                    .anyMatch(course -> (course.getDay() + " " + course.getStartTime()).equals(courseSlot));
-
-            if (studentConflict) {
-                System.out.println("The slot " + courseSlot + " is already occupied for student " + selectedStudent);
-                return;
-            }
-
-
-            boolean classroomConflict = courses.stream()
-                    .filter(course -> course.getClassroom() != null && course.getClassroom().getClassroomName().equals(selectedClassroom))
-                    .anyMatch(course -> (course.getDay() + " " + course.getStartTime()).equals(courseSlot));
-
-            if (classroomConflict) {
-                System.out.println("The slot " + courseSlot + " is already occupied for classroom " + selectedClassroom);
-                return;
-            }
-
-
-            Course newCourse = new Course(courseName, courseDay, courseTime, courseDuration, lecturer, 1, new ArrayList<>(List.of(selectedStudent)));
-            newCourse.setClassroom(getClassroomByName(selectedClassroom));
-            courses.add(newCourse);
-
-            System.out.println("Added course: " + courseName + " for student " + selectedStudent + " in classroom " + selectedClassroom);
-
-            populateScheduleTable(selectedStudent);
+        if (selectedStudent == null || selectedClassroom == null) {
+            System.out.println("Please select a student and a classroom first.");
+            return; // If no selection, abort the process
         }
 
-        private Classroom getClassroomByName(String classroomName) {
+        // Prompt the user to enter course details
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Add Course");
+        dialog.setHeaderText("Enter Course Information");
+        dialog.setContentText("Enter course name: , day: , start time: , duration: , lecturer name:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()) {
+            System.out.println("Course creation cancelled.");
+            return;
+        }
+
+        String[] courseDetails = result.get().split(",");
+        if (courseDetails.length < 4) {
+            System.out.println("Invalid input format. Expected: courseName, day, startTime, duration, lecturer");
+            return;
+        }
+
+        String courseName = courseDetails[0].trim();
+        String courseDay = courseDetails[1].trim();
+        String courseTime = courseDetails[2].trim();
+        int courseDuration;
+        try {
+            courseDuration = Integer.parseInt(courseDetails[3].trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid duration format. Please enter a valid number.");
+            return;
+        }
+        String lecturer = courseDetails.length > 4 ? courseDetails[4].trim() : "Unknown Lecturer";
+
+        // Check if the course exists in the CSV data
+        if (!courseExistsInCSV(courseName)) {
+            System.out.println("The course does not exist in the available courses.");
+            return;
+        }
+
+        String courseSlot = courseDay + " " + courseTime;
+
+        // Calculate the end time based on the duration
+        String courseEndTime = calculateEndTime(courseTime, courseDuration);
+
+        // Check for conflicts for the student
+        boolean studentConflict = courses.stream()
+                .filter(course -> course.getStudents().contains(selectedStudent))
+                .anyMatch(course -> isTimeConflict(course.getStartTime(), course.getDurationInLectureHours(), courseSlot));
+
+        if (studentConflict) {
+            System.out.println("The slot " + courseSlot + " is already occupied for student " + selectedStudent);
+            return;
+        }
+
+        // Check for conflicts for the classroom
+        boolean classroomConflict = courses.stream()
+                .filter(course -> course.getClassroom() != null && course.getClassroom().getClassroomName().equals(selectedClassroom))
+                .anyMatch(course -> isTimeConflict(course.getStartTime(), course.getDurationInLectureHours(), courseSlot));
+
+        if (classroomConflict) {
+            System.out.println("The slot " + courseSlot + " is already occupied for classroom " + selectedClassroom);
+            return;
+        }
+
+        // Create and add the new course
+        Course newCourse = new Course(courseName, courseDay, courseTime, courseDuration, lecturer, 1, new ArrayList<>(List.of(selectedStudent)));
+        newCourse.setClassroom(getClassroomByName(selectedClassroom));
+        courses.add(newCourse);
+
+        System.out.println("Added course: " + courseName + " for student " + selectedStudent + " in classroom " + selectedClassroom);
+
+        populateScheduleTable(selectedStudent);
+    }
+
+    private boolean isTimeConflict(String existingStartTime, int existingDuration, String newSlot) {
+        // Parse the start times
+        String[] timeParts = newSlot.split(" ");
+        String newDay = timeParts[0];
+        String newTime = timeParts[1];
+
+        // Convert the start times to minutes for easy comparison
+        int newStartTimeInMinutes = convertTimeToMinutes(newTime);
+
+        // Calculate the end time of the new course
+        int newEndTimeInMinutes = newStartTimeInMinutes + (60 * existingDuration);
+
+        // Check the overlap
+        int existingStartTimeInMinutes = convertTimeToMinutes(existingStartTime);
+        int existingEndTimeInMinutes = existingStartTimeInMinutes + (60 * existingDuration);
+
+        return newStartTimeInMinutes < existingEndTimeInMinutes && newEndTimeInMinutes > existingStartTimeInMinutes;
+    }
+
+    private int convertTimeToMinutes(String time) {
+        // Time format: HH:mm
+        String[] timeParts = time.split(":");
+        int hours = Integer.parseInt(timeParts[0]);
+        int minutes = Integer.parseInt(timeParts[1]);
+        return hours * 60 + minutes; // Convert to minutes
+    }
+
+    private String calculateEndTime(String startTime, int duration) {
+        // Calculate the end time in minutes
+        int startTimeInMinutes = convertTimeToMinutes(startTime);
+        int endTimeInMinutes = startTimeInMinutes + (duration * 60);
+
+        // Convert back to HH:mm format
+        int hours = endTimeInMinutes / 60;
+        int minutes = endTimeInMinutes % 60;
+
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
+    private boolean courseExistsInCSV(String courseName) {
+        // Check if the course is available in the CSV data
+        for (Course course : courses) {
+            if (course.getCourseName().equals(courseName)) {
+                return true; // Course exists
+            }
+        }
+        return false; // Course does not exist in the CSV data
+    }
+
+
+    private Classroom getClassroomByName(String classroomName) {
             for (Classroom classroom : classrooms) {
                 if (classroom.getClassroomName().equals(classroomName)) {
                     return classroom;
