@@ -10,7 +10,7 @@
 <HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.MatchingController">
    <children>
        <!-- Table View for displaying classroom data -->
-       <TableView fx:id="tableView" prefHeight="400.0" prefWidth="400.0">
+       <TableView fx:id="tableView" fixedCellSize="30.0">
            <columns>
                <!-- Classroom Column -->
                <TableColumn minWidth="300.0" prefWidth="500.0" text="Classroom">
@@ -32,6 +32,7 @@
          <children>
               <Button onAction="#viewSchedules" prefHeight="40.0" prefWidth="105.0" text="View Schedules" />
               <Button onAction="#editTable" prefHeight="40.0" prefWidth="105.0" text="Edit Table" />
+            <Button mnemonicParsing="false" onAction="#saveMatchingToCSV" prefHeight="40.0" prefWidth="105.0" text="Save Matching" />
               <Button onAction="#downloadAsFile" prefHeight="40.0" prefWidth="105.0" text="Download Table" />
               <Button onAction="#back" prefHeight="40.0" prefWidth="105.0" text="Back" />
          </children>

@@ -7,7 +7,9 @@ public class Classroom implements IClassroom {
     private String classroomName;
     private int capacity;
     private List<String> availableTimes;
+    private List<Course> courses;
     private ISchedule schedule; // Schedule for the classroom
+    private WeeklySchedule weeklySchedule;//weekly schedule for classrooms
 
     public Classroom(String classroomName, int capacity) {
         this.classroomName = classroomName;

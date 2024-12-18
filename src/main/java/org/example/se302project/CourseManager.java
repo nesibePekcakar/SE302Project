@@ -126,5 +126,75 @@ public class CourseManager {
         String outputFilePath = appDirectory + "/ClassroomCapacity.csv";
         return outputFilePath;
     }
+    public static void writeRoomAssignmentsToCSV(Map<String, List<String>> roomAssignments, String filePath) {
+        try (FileWriter writer = new FileWriter(filePath)) {
+            // Write the header row
+            writer.write("Classroom Name;Assigned Courses\n");
+
+            // Iterate through the roomAssignments map and write each entry to the file
+            for (Map.Entry<String, List<String>> entry : roomAssignments.entrySet()) {
+                String classroomName = entry.getKey();
+                List<String> assignedCourses = entry.getValue();
+
+                // Convert the list of assigned courses to a single string separated by commas
+                String assignedCoursesString = String.join(", ", assignedCourses);
+
+                // Write data in CSV format
+                writer.write(classroomName + ";" + assignedCoursesString + "\n");
+            }
+
+            System.out.println("Room assignments have been successfully saved to: " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
+    }
+
+    // Method to get the file path from the user (for classroom capacities)
+    public  String getMatchingFilePath() {
+        String userHome = System.getProperty("user.home");
+        String appDirectory = userHome + "/SE302Project";
+
+        // Ensure the directory exists
+        File directory = new File(appDirectory);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String outputFilePath = appDirectory + "/Matching.csv";
+        return outputFilePath;
+    }
+    public  Map<String, List<String>> readMatching(String filePath) {
+        Map<String, List<String>> roomAssignments = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            // Skip header row
+            reader.readLine();
+
+            // Read each line in the file
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+
+                if (parts.length == 2) {
+                    String classroomName = parts[0].trim();
+                    String coursesString = parts[1].trim();
+
+                    // Split the courses by commas and create a list
+                    List<String> assignedCourses = Arrays.asList(coursesString.split(",\\s*"));
+
+                    // Add to the map
+                    roomAssignments.put(classroomName, assignedCourses);
+                }
+            }
+
+            System.out.println("Room assignments have been successfully loaded from: " + filePath);
+
+        } catch (IOException e) {
+            System.err.println("Error reading from the file: " + e.getMessage());
+        }
+
+        return roomAssignments;
+    }
+
 
 }
