@@ -65,9 +65,7 @@ public class AddStudentController {
     }
 
     private void goBack() {
-        // Logic to navigate to the previous screen
-        // This depends on your application structure. For example:
-        // App.setRoot("previousScreen");
+
         System.out.println("Navigating back...");
     }
 
