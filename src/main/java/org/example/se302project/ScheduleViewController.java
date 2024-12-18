@@ -294,10 +294,7 @@ public class ScheduleViewController {
         String selectedStudent = studentsChoiceBox.getValue();
         String selectedClassroom = classroomsChoiceBox.getValue();
 
-        if (selectedStudent == null || selectedClassroom == null) {
-            System.out.println("Please select a student and a classroom first.");
-            return; // If no selection, abort the process
-        }
+
 
         // Prompt the user to enter course details
         TextInputDialog dialog = new TextInputDialog();
