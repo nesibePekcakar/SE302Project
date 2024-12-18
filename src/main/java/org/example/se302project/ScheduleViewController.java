@@ -1,9 +1,14 @@
 package org.example.se302project;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.*;
 
 public class ScheduleViewController {
@@ -378,6 +383,23 @@ public class ScheduleViewController {
 
     public void goBack() {
         System.out.println("Going back...");
-        // Logic to navigate back
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("matching-view.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) scheduleTableView.getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                showProblem("Error", "An error occurred while loading the previous screen: " + e.getMessage());
+            }
+    }
+
+    private void showProblem(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
