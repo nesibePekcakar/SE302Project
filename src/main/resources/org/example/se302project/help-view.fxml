@@ -4,11 +4,10 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #00FA9A;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.HelpViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: cfcfcf;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.HelpViewController">
     <children>
         <Button layoutX="498.0" layoutY="331.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="56.0" text="Back" />
-        <TextArea layoutX="38.0" layoutY="46.0" prefHeight="183.0" prefWidth="516.0" text="app info" />
-        <TextArea layoutX="38.0" layoutY="254.0" prefHeight="37.0" prefWidth="516.0" text="mail bize burdan ulaşın :p" />
+        <TextArea layoutX="38.0" layoutY="46.0" prefHeight="183.0" prefWidth="516.0" editable="false" text="About The App &#10;&#10; Class to Classroom Scheduling System is a standalone desktop application designed to&#10; facilitate efficient class and classroom scheduling for educational institutions. The system&#10; automates the assignment of classrooms to courses, allows for flexible modifications like&#10; switching the automated matching when necessary, adding new project meeting classes,&#10; looking up a student’s schedule, adding and removing students to classes. " />
+        <TextArea layoutX="38.0" layoutY="254.0" prefHeight="37.0" prefWidth="516.0" editable="false" text="Contact:...@ieü.edu.tr" />
     </children>
 </AnchorPane>
