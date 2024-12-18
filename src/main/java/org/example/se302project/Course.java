@@ -1,5 +1,7 @@
 package org.example.se302project;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Course {
@@ -100,6 +102,12 @@ public class Course {
          Schedule schedule= new Schedule();
         schedule .setScheduledTimes(times);
         return schedule;
+    }
+    public String calculateEndTime() {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm");
+        LocalTime start = LocalTime.parse(startTime, timeFormatter);
+        LocalTime end = start.plusMinutes(durationInLectureHours * 45);
+        return end.format(timeFormatter);
     }
 
     @Override
