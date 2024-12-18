@@ -289,7 +289,7 @@ public class ScheduleViewController {
         // Logic to download schedule
     }
 
-    public void addCourse() {
+    /*public void addCourse() {
         System.out.println("Adding new course...");
         String selectedStudent = studentsChoiceBox.getValue();
         String selectedClassroom = classroomsChoiceBox.getValue();
@@ -404,7 +404,121 @@ public class ScheduleViewController {
         int minutes = endTimeInMinutes % 60;
 
         return String.format("%02d:%02d", hours, minutes);
+    }*/
+
+    public void addCourse() {
+        System.out.println("Adding new course...");
+        String selectedStudent = studentsChoiceBox.getValue();
+
+        if (selectedStudent == null) {
+            System.out.println("Please select a student first.");
+            return;
+        }
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Add Course");
+        dialog.setHeaderText("Enter Course Information");
+        dialog.setContentText("Enter course name: , day: , start time: , duration: , lecturer name:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()) {
+            System.out.println("Course creation cancelled.");
+            return;
+        }
+
+        String[] courseDetails = result.get().split(",");
+        if (courseDetails.length < 4) {
+            System.out.println("Invalid input format. Expected: courseName, day, startTime, duration, lecturer");
+            return;
+        }
+
+        String courseName = courseDetails[0].trim();
+        String courseDay = courseDetails[1].trim();
+        String courseTime = courseDetails[2].trim();
+        int courseDuration;
+        try {
+            courseDuration = Integer.parseInt(courseDetails[3].trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid duration format. Please enter a valid number.");
+            return;
+        }
+        String lecturer = courseDetails.length > 4 ? courseDetails[4].trim() : "Unknown Lecturer";
+
+        String courseSlot = courseDay + " " + courseTime;
+
+        boolean studentConflict = courses.stream()
+                .filter(course -> course.getStudents().contains(selectedStudent))
+                .anyMatch(course -> (course.getDay() + " " + course.getStartTime()).equals(courseSlot));
+
+        if (studentConflict) {
+            System.out.println("The slot " + courseSlot + " is already occupied for student " + selectedStudent);
+            return;
+        }
+
+        Course newCourse = new Course(courseName, courseDay, courseTime, courseDuration, lecturer, 1, new ArrayList<>(List.of(selectedStudent)));
+
+        Classroom availableClassroom = findAvailableClassroom(courseSlot);
+        if (availableClassroom != null) {
+            newCourse.setClassroom(availableClassroom);
+            System.out.println("Assigned classroom: " + availableClassroom.getClassroomName());
+        } else {
+            System.out.println("No available classroom. Course added without a classroom.");
+        }
+
+        courses.add(newCourse);
+        System.out.println("Added course: " + courseName + " for student " + selectedStudent);
+
+        populateScheduleTable(selectedStudent);
     }
+
+    private Classroom findAvailableClassroom(String courseSlot) {
+        for (Classroom classroom : classrooms) {
+            boolean classroomConflict = courses.stream()
+                    .filter(course -> course.getClassroom() != null && course.getClassroom().equals(classroom))
+                    .anyMatch(course -> (course.getDay() + " " + course.getStartTime()).equals(courseSlot));
+
+            if (!classroomConflict) {
+                return classroom;
+            }
+        }
+        return null;
+    }
+
+
+
+    private boolean isTimeConflict(String existingDay, String existingStartTime, int existingDuration, String newDay, String newStartTime, int newDuration) {
+        // Gün farklı ise çakışma yok
+        if (!existingDay.equals(newDay)) {
+            return false;
+        }
+
+        // Saatleri dakikaya çevir
+        int existingStart = convertTimeToMinutes(existingStartTime);
+        int existingEnd = existingStart + (existingDuration * 60);
+
+        int newStart = convertTimeToMinutes(newStartTime);
+        int newEnd = newStart + (newDuration * 60);
+
+        // Zaman dilimlerinde çakışma olup olmadığını kontrol et
+        return newStart < existingEnd && newEnd > existingStart;
+    }
+
+    private int convertTimeToMinutes(String time) {
+        String[] timeParts = time.split(":");
+        int hours = Integer.parseInt(timeParts[0]);
+        int minutes = Integer.parseInt(timeParts[1]);
+        return hours * 60 + minutes;
+    }
+
+    private String calculateEndTime(String startTime, int duration) {
+        int startTimeInMinutes = convertTimeToMinutes(startTime);
+        int endTimeInMinutes = startTimeInMinutes + (duration * 60);
+
+        int hours = endTimeInMinutes / 60;
+        int minutes = endTimeInMinutes % 60;
+
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
 
     private boolean courseExistsInCSV(String courseName) {
         // Check if the course is available in the CSV data
@@ -417,14 +531,6 @@ public class ScheduleViewController {
     }
 
 
-    private Classroom getClassroomByName(String classroomName) {
-            for (Classroom classroom : classrooms) {
-                if (classroom.getClassroomName().equals(classroomName)) {
-                    return classroom;
-                }
-            }
-            return null; // Eğer sınıf bulunamazsa null döndür
-        }
 
 
 
