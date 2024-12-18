@@ -31,10 +31,10 @@
         </TableView>
         <HBox prefHeight="100.0" prefWidth="200.0" spacing="70.0">
             <children>
-                <Button mnemonicParsing="false" text="Download" />
-                <Button mnemonicParsing="false" text="Add Course" />
-                <Button mnemonicParsing="false" text="Add Student" />
-                <Button mnemonicParsing="false" text="Back" />
+                <Button mnemonicParsing="false" text="Download" onAction="#downloadSchedule" />
+                <Button mnemonicParsing="false" text="Add Course" onAction="#addCourse" />
+                <Button mnemonicParsing="false" text="Add Student" onAction="#addStudent" />
+                <Button mnemonicParsing="false" text="Back" onAction="#goBack" />
             </children>
             <padding>
                 <Insets left="50.0" right="50.0" top="10.0" />
