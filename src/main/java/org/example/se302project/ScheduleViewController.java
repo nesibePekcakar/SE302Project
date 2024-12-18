@@ -333,7 +333,7 @@ public class ScheduleViewController {
         if (!courseExistsInCSV(courseName)) {
             System.out.println("The course does not exist in the available courses.");
             return;
-        }
+        }//
 
         String courseSlot = courseDay + " " + courseTime;
 
