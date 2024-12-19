@@ -7,29 +7,30 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.MatchingController">
+<HBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.MatchingController">
    <children>
-       <!-- Table View for displaying classroom data -->
-       <TableView fx:id="tableView" fixedCellSize="30.0">
+       <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
            <columns>
-               <!-- Classroom Column -->
-               <TableColumn minWidth="300.0" prefWidth="500.0" text="Classroom">
+               <TableColumn maxWidth="1.7976931348623157E308" minWidth="400.0" prefWidth="450.0" text="Classroom">
                <columns>
                   <TableColumn fx:id="classroomColumn" prefWidth="100.0" text="Classroom" />
                   <TableColumn fx:id="capacityColumn" prefWidth="100.0" text="Capacity" />
                </columns>
             </TableColumn>
-               <!-- Capacity Column -->
-               <TableColumn prefWidth="100" text="Lecture">
+               <TableColumn maxWidth="1.7976931348623157E308" minWidth="400.0" prefWidth="450.0" text="Lecture">
                <columns>
                   <TableColumn fx:id="assignedCourseColumn" prefWidth="100.0" text="Lecture" />
                   <TableColumn fx:id="attendanceColumn" prefWidth="100.0" text="Attendance" />
                </columns>
             </TableColumn>
            </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
        </TableView>
       <VBox prefHeight="400.0" prefWidth="134.0" spacing="25.0">
          <children>
+            <Button onAction="#showHelp" prefHeight="40.0" prefWidth="105.0" text="Help" />
               <Button onAction="#viewSchedules" prefHeight="40.0" prefWidth="105.0" text="View Schedules" />
               <Button onAction="#editTable" prefHeight="40.0" prefWidth="105.0" text="Edit Table" />
             <Button mnemonicParsing="false" onAction="#saveMatchingToCSV" prefHeight="40.0" prefWidth="105.0" text="Save Matching" />

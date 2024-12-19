@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Alert;
@@ -274,5 +275,25 @@ public class MatchingController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void showHelp() {
+        Alert helpAlert = new Alert(AlertType.INFORMATION);
+        helpAlert.setTitle("Help");
+        helpAlert.setHeaderText("Need Assistance?");
+        Label label = new Label("This section allows you to see the general data gathered from csv files you have selected. "
+                + "Here are the things you can do:\n"
+                + "1. View schedules and arrange them\n"
+                + "2. Edit the table on your behalf\n"
+                + "3. Save the matching\n"
+                + "4. Download the table in a place in your computer\n"
+                + "5. Go back to the previous scene.");
+        
+        label.setWrapText(true);
+
+        helpAlert.getDialogPane().setContent(label);
+
+        helpAlert.getDialogPane().setPrefSize(500, 400);
+        helpAlert.showAndWait();
     }
 }
