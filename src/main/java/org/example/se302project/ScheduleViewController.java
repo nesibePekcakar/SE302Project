@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 import java.io.IOException;
 import java.util.*;
@@ -208,6 +210,7 @@ public class ScheduleViewController {
         List<Course> studentClasses = getStudentClasses(studentName);
 
 
+
         for (Course course : studentClasses) {
             String classDay = course.getDay();
             String classTime = course.getStartTime();
@@ -225,6 +228,7 @@ public class ScheduleViewController {
                             scheduleForDay[currentIndex] = className;
                         }
                     }
+
                 }
             }
         }
@@ -533,4 +537,21 @@ public class ScheduleViewController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public void showScheduleHelp() {
+        Alert helpAlert = new Alert(AlertType.INFORMATION);
+        helpAlert.setTitle("View Schedule - Help");
+        helpAlert.setHeaderText("How to View a Student's Schedule");
+        Label label = new Label("1. Select a student from the dropdown menu.\n"
+                + "2. The schedule table will automatically update.\n"
+                + "3. You may add a non-conflicting course to a student via the related button.");
+        label.setWrapText(true);
+
+        helpAlert.getDialogPane().setContent(label);
+
+        helpAlert.getDialogPane().setPrefSize(500, 400);
+        helpAlert.showAndWait();
+    }
+
+
 }
