@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.util.*;
 
 public class ScheduleViewController {
+    @FXML
+    private TextField studentNameField; // TextField to input student name
+
+    private List<String> students = new ArrayList<>();
 
     @FXML
     private ChoiceBox<String> classroomsChoiceBox; // New choice box for classrooms
@@ -81,6 +85,42 @@ public class ScheduleViewController {
         wednesdayColumn.setCellValueFactory(new PropertyValueFactory<>("wednesday"));
         thursdayColumn.setCellValueFactory(new PropertyValueFactory<>("thursday"));
         fridayColumn.setCellValueFactory(new PropertyValueFactory<>("friday"));
+
+        setupColumnClickHandler(mondayColumn, "Monday");
+        setupColumnClickHandler(tuesdayColumn, "Tuesday");
+        setupColumnClickHandler(wednesdayColumn, "Wednesday");
+        setupColumnClickHandler(thursdayColumn, "Thursday");
+        setupColumnClickHandler(fridayColumn, "Friday");
+    }
+    private void setupColumnClickHandler(TableColumn<WeeklySchedule, String> column, String day) {
+        column.setCellFactory(tc -> {
+            TableCell<WeeklySchedule, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(item); // Set the text of the cell
+                    if (item != null && !empty) {
+                        setOnMouseClicked(event -> {
+                            System.out.println("Clicked on " + item + " on " + day);
+                            openLessonDetails(item, day);
+                        });
+                    } else {
+                        setOnMouseClicked(null); // Remove click event for empty cells
+                    }
+                }
+            };
+            return cell;
+        });
+    }
+    private void openLessonDetails(String lessonName, String day) {
+        if (lessonName == null || lessonName.isEmpty()) return;
+
+        // You can load a new FXML or display lesson details in a dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Lesson Details");
+        alert.setHeaderText("Details for " + lessonName);
+        alert.setContentText("Day: " + day + "\nLesson: " + lessonName);
+        alert.showAndWait();
     }
 
     private void populateScheduleTable(String selection) {
@@ -327,7 +367,7 @@ public class ScheduleViewController {
         String lecturer = courseDetails.length > 4 ? courseDetails[4].trim() : "Unknown Lecturer";
 
         // Check if the course exists in the CSV data
-        if (!courseExistsInCSV(courseName)) {
+        /*if (!courseExistsInCSV(courseName)) {
             System.out.println("The course does not exist in the available courses.");
             return;
         }//
@@ -355,7 +395,7 @@ public class ScheduleViewController {
         if (classroomConflict) {
             System.out.println("The slot " + courseSlot + " is already occupied for classroom " + selectedClassroom);
             return;
-        }
+        }*/
 
         // Create and add the new course
         Course newCourse = new Course(courseName, courseDay, courseTime, courseDuration, lecturer, 1, new ArrayList<>(List.of(selectedStudent)));
@@ -367,7 +407,7 @@ public class ScheduleViewController {
         populateScheduleTable(selectedStudent);
     }
 
-    private boolean isTimeConflict(String existingStartTime, int existingDuration, String newSlot) {
+    /*private boolean isTimeConflict(String existingStartTime, int existingDuration, String newSlot) {
         // Parse the start times
         String[] timeParts = newSlot.split(" ");
         String newDay = timeParts[0];
@@ -414,7 +454,7 @@ public class ScheduleViewController {
             }
         }
         return false; // Course does not exist in the CSV data
-    }
+    }*/
 
 
     private Classroom getClassroomByName(String classroomName) {
@@ -424,7 +464,10 @@ public class ScheduleViewController {
                 }
             }
             return null; // Eğer sınıf bulunamazsa null döndür
-        }
+    }
+
+
+
 
 
 
@@ -432,7 +475,23 @@ public class ScheduleViewController {
 
     public void addStudent() {
         System.out.println("Adding new student...");
-        // Logic to add a student
+        String studentName = studentNameField.getText().trim();
+
+        if (!studentName.isEmpty() && !students.contains(studentName)) {
+            students.add(studentName);
+            studentsChoiceBox.getItems().add(studentName); // Update the ChoiceBox
+            studentNameField.clear(); // Clear the input field
+            showAlert("Success", "Student added successfully: " + studentName);
+        } else {
+            showAlert("Error", "Student name is either empty or already exists.");
+        }
+    }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION); // You can use other alert types like WARNING or ERROR
+        alert.setTitle(title);
+        alert.setHeaderText(null); // Optional: Remove the header
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public void goBack() {
@@ -456,4 +515,6 @@ public class ScheduleViewController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
 }

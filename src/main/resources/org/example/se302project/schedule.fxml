@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.ScheduleViewController">
     <children>
         <HBox prefHeight="100.0" prefWidth="200.0" spacing="50.0">
@@ -20,7 +21,7 @@
                 <Insets bottom="20.0" left="50.0" right="50.0" top="20.0" />
             </padding>
         </HBox>
-        <TableView fx:id="scheduleTableView" prefHeight="264.0" prefWidth="600.0">
+        <TableView fx:id="scheduleTableView" VBox.vgrow="ALWAYS" prefHeight="264.0" prefWidth="600.0">
             <columns>
                 <TableColumn fx:id="mondayColumn" prefWidth="106.4000244140625" text="Monday" />
                 <TableColumn fx:id="tuesdayColumn" prefWidth="120.0" text="Tuesday" />
@@ -29,15 +30,16 @@
                 <TableColumn fx:id="fridayColumn" prefWidth="124.0" text="Friday" />
             </columns>
         </TableView>
-        <HBox prefHeight="100.0" prefWidth="200.0" spacing="70.0">
+        <HBox spacing="10.0" alignment="CENTER" prefHeight="100.0" prefWidth="600.0">
             <children>
                 <Button mnemonicParsing="false" text="Download" onAction="#downloadSchedule" />
                 <Button mnemonicParsing="false" text="Add Course" onAction="#addCourse" />
                 <Button mnemonicParsing="false" text="Add Student" onAction="#addStudent" />
+                <TextField fx:id="studentNameField" promptText="Enter Student Name" />
                 <Button mnemonicParsing="false" text="Back" onAction="#goBack" />
             </children>
             <padding>
-                <Insets left="50.0" right="50.0" top="10.0" />
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </HBox>
     </children>
