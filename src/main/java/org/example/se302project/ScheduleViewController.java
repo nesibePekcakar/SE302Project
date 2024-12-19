@@ -36,6 +36,10 @@ public class ScheduleViewController {
 
     @FXML
     private TableColumn<WeeklySchedule, String> fridayColumn;
+    @FXML
+    private TextField studentNameField; // TextField to input student name
+
+    private List<String> students = new ArrayList<>();
 
     private CourseManager cm = new CourseManager();
     private List<Classroom> classrooms = cm.ReadClassrooms(cm.getClassroomCapacityFilePath());
@@ -81,6 +85,42 @@ public class ScheduleViewController {
         wednesdayColumn.setCellValueFactory(new PropertyValueFactory<>("wednesday"));
         thursdayColumn.setCellValueFactory(new PropertyValueFactory<>("thursday"));
         fridayColumn.setCellValueFactory(new PropertyValueFactory<>("friday"));
+
+        setupColumnClickHandler(mondayColumn, "Monday");
+        setupColumnClickHandler(tuesdayColumn, "Tuesday");
+        setupColumnClickHandler(wednesdayColumn, "Wednesday");
+        setupColumnClickHandler(thursdayColumn, "Thursday");
+        setupColumnClickHandler(fridayColumn, "Friday");
+    }
+    private void setupColumnClickHandler(TableColumn<WeeklySchedule, String> column, String day) {
+        column.setCellFactory(tc -> {
+            TableCell<WeeklySchedule, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(item); // Set the text of the cell
+                    if (item != null && !empty) {
+                        setOnMouseClicked(event -> {
+                            System.out.println("Clicked on " + item + " on " + day);
+                            openLessonDetails(item, day);
+                        });
+                    } else {
+                        setOnMouseClicked(null); // Remove click event for empty cells
+                    }
+                }
+            };
+            return cell;
+        });
+    }
+    private void openLessonDetails(String lessonName, String day) {
+        if (lessonName == null || lessonName.isEmpty()) return;
+
+        // You can load a new FXML or display lesson details in a dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Lesson Details");
+        alert.setHeaderText("Details for " + lessonName);
+        alert.setContentText("Day: " + day + "\nLesson: " + lessonName);
+        alert.showAndWait();
     }
 
     private void populateScheduleTable(String selection) {
@@ -518,8 +558,26 @@ public class ScheduleViewController {
 
     public void addStudent() {
         System.out.println("Adding new student...");
-        // Logic to add a student
+        System.out.println("Adding new student...");
+        String studentName = studentNameField.getText().trim();
+
+        if (!studentName.isEmpty() && !students.contains(studentName)) {
+            students.add(studentName);
+            studentsChoiceBox.getItems().add(studentName); // Update the ChoiceBox
+            studentNameField.clear(); // Clear the input field
+            showAlert("Success", "Student added successfully: " + studentName);
+        } else {
+            showAlert("Error", "Student name is either empty or already exists.");
+        }
     }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION); // You can use other alert types like WARNING or ERROR
+        alert.setTitle(title);
+        alert.setHeaderText(null); // Optional: Remove the header
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
     public void goBack() {
         System.out.println("Going back...");
