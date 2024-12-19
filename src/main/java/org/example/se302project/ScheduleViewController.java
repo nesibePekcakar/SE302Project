@@ -207,17 +207,25 @@ public class ScheduleViewController {
         List<Course> studentClasses = getStudentClasses(studentName);
 
 
+
         for (Course course : studentClasses) {
             String classDay = course.getDay();
             String classTime = course.getStartTime();
             String className = course.getCourseName();
+            int duration = course.getDurationInLectureHours();
 
 
             String[] scheduleForDay = dailySchedules.get(classDay);
             if (scheduleForDay != null) {
                 int timeIndex = timeSlots.indexOf(classTime);
                 if (timeIndex >= 0) {
-                    scheduleForDay[timeIndex] = className;
+                    for (int i = 0; i < duration; i++) {
+                        int currentIndex = timeIndex + i;
+                        if (currentIndex < timeSlots.size()) {
+                            scheduleForDay[currentIndex] = className;
+                        }
+                    }
+
                 }
             }
         }
