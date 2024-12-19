@@ -6,10 +6,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableView;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -40,6 +49,8 @@ public class ScheduleViewController {
     private TableColumn<WeeklySchedule, String> fridayColumn;
     @FXML
     private TextField studentNameField; // TextField to input student name
+
+    private Map<String, List<String>> roomAssignments;
 
     private List<String> students = new ArrayList<>();
 
@@ -345,10 +356,10 @@ public class ScheduleViewController {
 
 
 
-    public void downloadSchedule() {
-        System.out.println("Downloading schedule...");
-        // Logic to download schedule
-    }
+//    public void downloadSchedule() {
+//        System.out.println("Downloading schedule...");
+//        // Logic to download schedule
+//    }
 
 
     public void addCourse() {
@@ -553,5 +564,33 @@ public class ScheduleViewController {
         helpAlert.showAndWait();
     }
 
+    @FXML
+    private void downloadSchedule() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Schedule Data");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setInitialFileName("schedule.csv");
+
+        File file = fileChooser.showSaveDialog(scheduleTableView.getScene().getWindow());
+        if (file != null) {
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write("Monday,Tuesday,Wednesday,Thursday,Friday\n");
+
+                for (Object item : scheduleTableView.getItems()) {
+                    if (item instanceof Classroom classroom) {
+                        writer.write(String.format("%s,%d,%s\n",
+                                classroom.getClassroomName(),
+                                classroom.getCapacity(),
+                                "Assigned courses info here"
+                        ));
+                    }
+                }
+
+                showAlert("Download Successful", "The schedule data has been saved to: " + file.getAbsolutePath());
+            } catch (IOException e) {
+                showAlert("Error", "An error occurred while saving the file: " + e.getMessage());
+            }
+        }
+    }
 
 }
