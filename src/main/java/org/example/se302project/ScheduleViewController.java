@@ -205,6 +205,7 @@ public class ScheduleViewController {
         List<Course> studentClasses = getStudentClasses(studentName);
 
 
+
         for (Course course : studentClasses) {
             String classDay = course.getDay();
             String classTime = course.getStartTime();
@@ -222,6 +223,7 @@ public class ScheduleViewController {
                             scheduleForDay[currentIndex] = className;
                         }
                     }
+
                 }
             }
         }
