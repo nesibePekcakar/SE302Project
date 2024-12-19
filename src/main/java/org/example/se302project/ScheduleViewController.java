@@ -45,6 +45,7 @@ public class ScheduleViewController {
     private List<Classroom> classrooms = cm.ReadClassrooms(cm.getClassroomCapacityFilePath());
     private List<Course> courses = cm.ReadCourses(cm.getCoursesFilePath());
     private Map<String, List<String>> matching = cm.readMatching(cm.getMatchingFilePath());
+    private String selectedCourseName = "";
 
     @FXML
     public void initialize() {
@@ -101,6 +102,7 @@ public class ScheduleViewController {
                     setText(item); // Set the text of the cell
                     if (item != null && !empty) {
                         setOnMouseClicked(event -> {
+                            selectedCourseName = item;
                             System.out.println("Clicked on " + item + " on " + day);
                             openLessonDetails(item, day);
                         });
@@ -336,9 +338,7 @@ public class ScheduleViewController {
         return new WeeklySchedule(monday, tuesday, wednesday, thursday, friday);
     }
 
-    public void refreshSchedules() {
 
-    }
 
     public void downloadSchedule() {
         System.out.println("Downloading schedule...");
@@ -346,71 +346,6 @@ public class ScheduleViewController {
     }
 
 
-
-    /*public void addCourse() {
-        System.out.println("Adding new course...");
-        String selectedStudent = studentsChoiceBox.getValue();
-
-        if (selectedStudent == null) {
-            System.out.println("Please select a student first.");
-            return;
-        }
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Add Course");
-        dialog.setHeaderText("Enter Course Information");
-        dialog.setContentText("Enter course name: , day: , start time: , duration: , lecturer name:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isEmpty()) {
-            System.out.println("Course creation cancelled.");
-            return;
-        }
-
-        String[] courseDetails = result.get().split(",");
-        if (courseDetails.length < 4) {
-            System.out.println("Invalid input format. Expected: courseName, day, startTime, duration, lecturer");
-            return;
-        }
-
-        String courseName = courseDetails[0].trim();
-        String courseDay = courseDetails[1].trim();
-        String courseTime = courseDetails[2].trim();
-        int courseDuration;
-        try {
-            courseDuration = Integer.parseInt(courseDetails[3].trim());
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid duration format. Please enter a valid number.");
-            return;
-        }
-        String lecturer = courseDetails.length > 4 ? courseDetails[4].trim() : "Unknown Lecturer";
-
-        String courseSlot = courseDay + " " + courseTime;
-
-        boolean studentConflict = courses.stream()
-                .filter(course -> course.getStudents().contains(selectedStudent))
-                .anyMatch(course -> (course.getDay() + " " + course.getStartTime()).equals(courseSlot));
-
-        if (studentConflict) {
-            System.out.println("The slot " + courseSlot + " is already occupied for student " + selectedStudent);
-            return;
-        }
-
-        Course newCourse = new Course(courseName, courseDay, courseTime, courseDuration, lecturer, 1, new ArrayList<>(List.of(selectedStudent)));
-
-        Classroom availableClassroom = findAvailableClassroom(courseSlot);
-        if (availableClassroom != null) {
-            newCourse.setClassroom(availableClassroom);
-            System.out.println("Assigned classroom: " + availableClassroom.getClassroomName());
-        } else {
-            System.out.println("No available classroom. Course added without a classroom.");
-        }
-
-        courses.add(newCourse);
-        System.out.println("Added course: " + courseName + " for student " + selectedStudent);
-
-        populateScheduleTable(selectedStudent);
-    }
-*/
     public void addCourse() {
         System.out.println("Adding new course...");
         String selectedStudent = studentsChoiceBox.getValue();
@@ -550,20 +485,17 @@ public class ScheduleViewController {
     }
 
 
-
-
-
-
-
-
     public void addStudent() {
+
         System.out.println("Adding new student...");
         System.out.println("Adding new student...");
         String studentName = studentNameField.getText().trim();
+        ArrayList<String> selectedCourseStudents = getCourseByName(selectedCourseName).getStudents();
 
-        if (!studentName.isEmpty() && !students.contains(studentName)) {
-            students.add(studentName);
+        if (!studentName.isEmpty() && !selectedCourseStudents.contains(studentName)) {
+            getCourseByName(selectedCourseName).getStudents().add(studentName);
             studentsChoiceBox.getItems().add(studentName); // Update the ChoiceBox
+            System.out.println(getCourseByName(selectedCourseName).getStudents());
             studentNameField.clear(); // Clear the input field
             showAlert("Success", "Student added successfully: " + studentName);
         } else {
