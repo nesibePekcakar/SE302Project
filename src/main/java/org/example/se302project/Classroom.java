@@ -7,6 +7,15 @@ public class Classroom implements IClassroom {
     private String classroomName;
     private int capacity;
     private List<String> availableTimes;
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
     private List<Course> courses;
     private ISchedule schedule; // Schedule for the classroom
     private WeeklySchedule weeklySchedule;//weekly schedule for classrooms
@@ -65,5 +74,8 @@ public class Classroom implements IClassroom {
             return true; // No schedule assigned, classroom is available.
         }
         return !this.schedule.conflictsWith(schedule);
+    }
+    public List<Course> getClassCourses() {
+        return this.courses;
     }
 }
