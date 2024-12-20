@@ -7,17 +7,17 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.MatchingController">
+<HBox prefHeight="573.0" prefWidth="784.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.MatchingController">
    <children>
-       <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+       <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="574.0" prefWidth="646.0" style="-fx-border-color: #99cccc; -fx-fixed-cell-size: 30;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
            <columns>
-               <TableColumn maxWidth="1.7976931348623157E308" minWidth="400.0" prefWidth="450.0" text="Classroom">
+               <TableColumn maxWidth="1.7976931348623157E308" minWidth="323.1999695301056" prefWidth="333.59993290901184" style="-fx-background-color: #99cccc;" text="Classroom Information">
                <columns>
                   <TableColumn fx:id="classroomColumn" prefWidth="100.0" text="Classroom" />
                   <TableColumn fx:id="capacityColumn" prefWidth="100.0" text="Capacity" />
                </columns>
             </TableColumn>
-               <TableColumn maxWidth="1.7976931348623157E308" minWidth="400.0" prefWidth="450.0" text="Lecture">
+               <TableColumn maxWidth="1.7976931348623157E308" minWidth="318.40008544921875" prefWidth="322.40008544921875" style="-fx-background-color: #99cccc;" text="Lecture Information">
                <columns>
                   <TableColumn fx:id="assignedCourseColumn" prefWidth="100.0" text="Lecture" />
                   <TableColumn fx:id="attendanceColumn" prefWidth="100.0" text="Attendance" />
@@ -30,12 +30,12 @@
        </TableView>
       <VBox prefHeight="400.0" prefWidth="134.0" spacing="25.0">
          <children>
-            <Button onAction="#showHelp" prefHeight="40.0" prefWidth="105.0" text="Help" />
-              <Button onAction="#viewSchedules" prefHeight="40.0" prefWidth="105.0" text="View Schedules" />
-              <Button onAction="#editTable" prefHeight="40.0" prefWidth="105.0" text="Edit Table" />
-            <Button mnemonicParsing="false" onAction="#saveMatchingToCSV" prefHeight="40.0" prefWidth="105.0" text="Save Matching" />
-              <Button onAction="#downloadAsFile" prefHeight="40.0" prefWidth="105.0" text="Download Table" />
-              <Button onAction="#back" prefHeight="40.0" prefWidth="105.0" text="Back" />
+            <Button onAction="#showHelp" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Help" />
+              <Button onAction="#viewSchedules" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="View Schedules" />
+              <Button onAction="#editTable" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Edit Table" />
+            <Button mnemonicParsing="false" onAction="#saveMatchingToCSV" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Save Matching" />
+              <Button onAction="#downloadAsFile" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Download Table" />
+              <Button onAction="#back" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Back" />
          </children>
          <padding>
             <Insets bottom="60.0" left="20.0" right="10.0" top="80.0" />
