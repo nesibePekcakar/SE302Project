@@ -57,7 +57,7 @@ public class ScheduleViewController {
     private List<Course> courses = cm.ReadCourses(cm.getCoursesFilePath());
     private Map<String, List<String>> matching = cm.readMatching(cm.getMatchingFilePath());
     private String selectedCourseName = "";
-    String push= "";
+    String push = "";
 
     @FXML
     public void initialize() {
@@ -105,6 +105,7 @@ public class ScheduleViewController {
         setupColumnClickHandler(thursdayColumn, "Thursday");
         setupColumnClickHandler(fridayColumn, "Friday");
     }
+
     private void setupColumnClickHandler(TableColumn<WeeklySchedule, String> column, String day) {
         column.setCellFactory(tc -> {
             TableCell<WeeklySchedule, String> cell = new TableCell<>() {
@@ -126,6 +127,7 @@ public class ScheduleViewController {
             return cell;
         });
     }
+
     private void openLessonDetails(String lessonName, String day) {
         if (lessonName == null || lessonName.isEmpty()) return;
 
@@ -181,7 +183,6 @@ public class ScheduleViewController {
         List<Course> studentClasses = getStudentClasses(studentName);
 
 
-
         for (Course course : studentClasses) {
             String classDay = course.getDay();
             String classTime = course.getStartTime();
@@ -214,7 +215,6 @@ public class ScheduleViewController {
 
         return new WeeklySchedule(monday, tuesday, wednesday, thursday, friday);
     }
-
 
 
     private WeeklySchedule CreateClassSchedule(String classroom) {
@@ -292,8 +292,6 @@ public class ScheduleViewController {
     }
 
 
-
-
     private List<Course> getStudentClasses(String name) {
         List<Course> studentCourses = new ArrayList<>();
         for (Course course : courses) {
@@ -320,13 +318,14 @@ public class ScheduleViewController {
         return classroomCourses;
     }
 
+
     private Course getCourseByName(String courseName) {
         for (Course course : courses) {
-            if (course.getCourseName().equals(courseName)) {
+            if (course.getCourseName().equalsIgnoreCase(courseName)) {
                 return course;
             }
         }
-        return null;  // Return null if the course is not found
+        return null; // Eğer ders bulunamazsa null döndür
     }
 
     public void addCourse() {
@@ -409,6 +408,7 @@ public class ScheduleViewController {
 
         populateScheduleTable(selectedStudent);
     }
+
     private boolean isValidStartTime(String time) {
         String timePattern = "^([01]?[0-9]|2[0-3]):([0-5][0-9])$";
 
@@ -444,19 +444,16 @@ public class ScheduleViewController {
     }
 
     private boolean isTimeConflict(String existingDay, String existingStartTime, int existingDuration, String newDay, String newStartTime, int newDuration) {
-        // Gün farklı ise çakışma yok
         if (!existingDay.equals(newDay)) {
             return false;
         }
 
-        // Saatleri dakikaya çevir
         int existingStart = convertTimeToMinutes(existingStartTime);
         int existingEnd = existingStart + (existingDuration * 45);
 
         int newStart = convertTimeToMinutes(newStartTime);
         int newEnd = newStart + (newDuration * 45);
 
-        // Zaman dilimlerinde çakışma olup olmadığını kontrol et
         return newStart < existingEnd && newEnd > existingStart;
     }
 
@@ -468,7 +465,7 @@ public class ScheduleViewController {
     }
 
 
-    public void addStudent() {
+    /*public void addStudent() {
 
         System.out.println("Adding new student...");
         System.out.println("Adding new student...");
@@ -491,7 +488,174 @@ public class ScheduleViewController {
         alert.setHeaderText(null); // Optional: Remove the header
         alert.setContentText(message);
         alert.showAndWait();
+    }*/
+
+
+    public void addStudent() {
+        TextInputDialog nameInputDialog = new TextInputDialog();
+        nameInputDialog.setTitle("Add Student");
+        nameInputDialog.setHeaderText("Enter the student's name:");
+        nameInputDialog.setContentText("Student Name:");
+
+        Optional<String> nameResult = nameInputDialog.showAndWait();
+        if (nameResult.isEmpty() || nameResult.get().trim().isEmpty()) {
+            showAlert("Error", "Student name cannot be empty.");
+            return;
+        }
+        String studentName = nameResult.get().trim();
+
+        TextInputDialog courseInputDialog = new TextInputDialog();
+        courseInputDialog.setTitle("Course Selection");
+        courseInputDialog.setHeaderText("Enter the course name to add the student:");
+        courseInputDialog.setContentText("Course Name:");
+
+        Optional<String> courseResult = courseInputDialog.showAndWait();
+        if (courseResult.isEmpty() || courseResult.get().trim().isEmpty()) {
+            showAlert("Error", "Course name cannot be empty.");
+            return;
+        }
+
+        String courseName = courseResult.get().trim();
+
+        Course selectedCourse = getCourseByName(courseName);
+        if (selectedCourse == null) {
+            showAlert("Error", "Course not found: " + courseName);
+            return;
+        }
+
+        ArrayList<String> students = selectedCourse.getStudents();
+        if (!students.contains(studentName)) {
+            students.add(studentName);
+            selectedCourse.setAttendance(students.size());
+            showAlert("Success", "Student '" + studentName + "' added to course '" + courseName + "'.");
+        } else {
+            showAlert("Error", "Student '" + studentName + "' is already enrolled in this course.");
+        }
     }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
+    public void showStudents() {
+        TextInputDialog courseInputDialog = new TextInputDialog();
+        courseInputDialog.setTitle("Show Students in Course");
+        courseInputDialog.setHeaderText("Enter the course name to view enrolled students:");
+        courseInputDialog.setContentText("Course Name:");
+
+        Optional<String> courseResult = courseInputDialog.showAndWait();
+        if (courseResult.isEmpty() || courseResult.get().trim().isEmpty()) {
+            showAlert("Error", "Course name cannot be empty.");
+            return;
+        }
+
+        String courseName = courseResult.get().trim();
+
+        Course selectedCourse = getCourseByName(courseName);
+        if (selectedCourse == null) {
+            showAlert("Error", "Course not found: " + courseName);
+            return;
+        }
+
+
+        ArrayList<String> students = selectedCourse.getStudents();
+
+        if (students.isEmpty()) {
+            showAlert("Info", "No students enrolled in " + courseName + ".");
+        } else {
+            String studentList = String.join("\n", students);
+
+            TextArea textArea = new TextArea(studentList);
+            textArea.setEditable(false);
+            textArea.setWrapText(true);
+            textArea.setPrefHeight(400);
+            textArea.setPrefWidth(300);
+
+            ScrollPane scrollPane = new ScrollPane(textArea);
+            scrollPane.setFitToWidth(true);
+
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Students in " + courseName);
+            dialog.getDialogPane().setContent(scrollPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+            dialog.showAndWait();
+        }
+    }
+
+
+
+    public void removeStudentFromCourse() {
+        System.out.println("Removing a student from a course...");
+
+        TextInputDialog studentInputDialog = new TextInputDialog();
+        studentInputDialog.setTitle("Remove Student from Course");
+        studentInputDialog.setHeaderText("Enter the student's name to remove:");
+        studentInputDialog.setContentText("Student Name:");
+
+        Optional<String> studentResult = studentInputDialog.showAndWait();
+        if (studentResult.isEmpty() || studentResult.get().trim().isEmpty()) {
+            showAlert("Error", "Student name cannot be empty.");
+            return;
+        }
+
+        String studentName = studentResult.get().trim().toLowerCase();
+
+        TextInputDialog courseInputDialog = new TextInputDialog();
+        courseInputDialog.setTitle("Remove Student from Course");
+        courseInputDialog.setHeaderText("Enter the course name to remove the student from:");
+        courseInputDialog.setContentText("Course Name:");
+
+        Optional<String> courseResult = courseInputDialog.showAndWait();
+        if (courseResult.isEmpty() || courseResult.get().trim().isEmpty()) {
+            showAlert("Error", "Course name cannot be empty.");
+            return;
+        }
+
+        String courseName = courseResult.get().trim();
+
+        Course selectedCourse = getCourseByName(courseName);
+        if (selectedCourse == null) {
+            showAlert("Error", "Course not found: " + courseName);
+            return;
+        }
+
+        ArrayList<String> courseStudents = selectedCourse.getStudents();
+
+        Optional<String> matchingStudent = courseStudents.stream()
+                .filter(student -> student.toLowerCase().equals(studentName))
+                .findFirst();
+
+        if (matchingStudent.isPresent()) {
+            courseStudents.remove(matchingStudent.get());
+            showAlert("Success", "Student " + matchingStudent.get() + " has been removed from " + courseName + ".");
+        } else {
+            showAlert("Error", "Student " + studentName + " is not enrolled in " + courseName + ".");
+        }
+    }
+
+
+
+    private List<String> getCoursesInClassroom(String classroomName) {
+        List<String> courseNames = new ArrayList<>();
+        System.out.println("Looking for courses in classroom: " + classroomName);
+
+        for (Course course : courses) {
+            if (course.getClassroom() != null && course.getClassroom().getClassroomName().equals(classroomName)) {
+                courseNames.add(course.getCourseName());
+            }
+
+        }
+        System.out.println("Courses found: " + courseNames);
+        return courseNames;
+
+    }
+
 
 
     public void goBack() {
