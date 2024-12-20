@@ -3,8 +3,12 @@ import java.io.*;
 import java.util.*;
 
 public class CourseManager {
+
+
     public CourseManager() {
+
     }
+
 
     // Method to read courses from file
     public static List<Course> ReadCourses(String filePath) {
@@ -97,6 +101,69 @@ public class CourseManager {
     }
 
     // Method to get the file path from the user (for courses)
+
+    public static void writeAll(ArrayList<Course> courses, ArrayList<Classroom> classrooms, Map<String, List<String>> roomAssignments) {
+        String userHome = System.getProperty("user.home");
+        String filePath = userHome + "/SE302Project/AllDetails.csv";
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            // Write the header row
+            writer.write("Course Name, Classroom Name, Capacity, Day, Start Time, End Time, Lecturer, Enrolled Students\n");
+
+            // Iterate through courses and write details
+            for (Course course : courses) {
+                Classroom classroom = course.getClassroom();
+                String classroomName = (classroom != null) ? classroom.getClassroomName() : "No Classroom Assigned";
+                String capacity = (classroom != null) ? String.valueOf(classroom.getCapacity()) : "N/A";
+                String endTime = calculateEndTime(course.getStartTime(), course.getDurationInLectureHours());
+
+                writer.write(
+                        course.getCourseName() + ", " +
+                                classroomName + ", " +
+                                capacity + ", " +
+                                course.getDay() + ", " +
+                                course.getStartTime() + ", " +
+                                endTime + ", " +
+                                course.getLecturer() + ", " +
+                                course.getAttendance() + "\n"
+                );
+            }
+
+            writer.write("\nClassroom Assignments\n");
+            writer.write("Classroom Name, Assigned Courses\n");
+
+            // Write room assignments
+            for (Map.Entry<String, List<String>> entry : roomAssignments.entrySet()) {
+                String classroomName = entry.getKey();
+                String assignedCourses = String.join(", ", entry.getValue());
+                writer.write(classroomName + ", " + assignedCourses + "\n");
+            }
+
+            System.out.println("All details have been successfully written to: " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
+
+    }
+
+    private static String calculateEndTime(String startTime, int duration) {
+        int startTimeInMinutes = convertTimeToMinutes(startTime);
+        int endTimeInMinutes = startTimeInMinutes + (duration * 45) + ((duration - 1) * 10);
+
+        int hours = endTimeInMinutes / 60;
+        int minutes = endTimeInMinutes % 60;
+
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
+    // Helper method to convert time to minutes
+    private static int convertTimeToMinutes(String time) {
+        String[] parts = time.split(":");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        return hours * 60 + minutes;
+    }
+
     public static String getCoursesFilePath() {
         String userHome = System.getProperty("user.home");
         String appDirectory = userHome + "/SE302Project";
