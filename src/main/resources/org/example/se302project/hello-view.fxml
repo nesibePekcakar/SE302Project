@@ -15,12 +15,12 @@
                   <Font name="Corbel Light" size="20.0" />
                </font>
             </Text>
-            <Button mnemonicParsing="false" onAction="#onEnterAFile" prefHeight="60.0" prefWidth="500.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Enter cvs Files">
+            <Button mnemonicParsing="false" onAction="#onEnterAFile" prefHeight="60.0" prefWidth="500.0" style="-fx-background-color: #99cccc; -fx-background-radius: 40;" text="Enter cvs Files">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#onHelp" prefHeight="60.0" prefWidth="500.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Help">
+            <Button mnemonicParsing="false" onAction="#onHelp" prefHeight="60.0" prefWidth="500.0" style="-fx-background-color: #99cccc; -fx-background-radius: 40;" text="Help">
                <font>
                   <Font size="24.0" />
                </font>

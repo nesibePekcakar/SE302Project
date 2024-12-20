@@ -723,7 +723,10 @@ public class ScheduleViewController {
             }
         }
     }
-
+    @FXML
+    private void downloadAll(){
+    cm.writeAll(courses,classrooms,matching);
+    }
 
 
 

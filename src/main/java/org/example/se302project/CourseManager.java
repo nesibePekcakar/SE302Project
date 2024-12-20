@@ -1,4 +1,6 @@
 package org.example.se302project;
+import javafx.stage.FileChooser;
+
 import java.io.*;
 import java.util.*;
 
@@ -102,31 +104,60 @@ public class CourseManager {
 
     // Method to get the file path from the user (for courses)
 
-    public static void writeAll(ArrayList<Course> courses, ArrayList<Classroom> classrooms, Map<String, List<String>> roomAssignments) {
-        String userHome = System.getProperty("user.home");
-        String filePath = userHome + "/SE302Project/AllDetails.csv";
+    public static void writeAll(List<Course> courses, List<Classroom> classrooms, Map<String, List<String>> roomAssignments) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save All the Information");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setInitialFileName("AllInfo.csv");
+
+        // Show the save dialog and get the file
+        File file = fileChooser.showSaveDialog(null);
+        if (file == null) {
+            System.out.println("Save operation canceled by the user.");
+            return;
+        }
+
+        String filePath = file.getAbsolutePath();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            // Write the header row
-            writer.write("Course Name, Classroom Name, Capacity, Day, Start Time, End Time, Lecturer, Enrolled Students\n");
+            // Write the header row for courses
+            writer.write("Course Name; Classroom Name; Capacity; Day; Start Time; End Time; Attendance; Lecturer; Enrolled Students\n");
 
             // Iterate through courses and write details
             for (Course course : courses) {
-                Classroom classroom = course.getClassroom();
-                String classroomName = (classroom != null) ? classroom.getClassroomName() : "No Classroom Assigned";
-                String capacity = (classroom != null) ? String.valueOf(classroom.getCapacity()) : "N/A";
+                Classroom currentClassroom = null;
+                String classroomNameHolder="";
+                for (Map.Entry<String, List<String>> entry : roomAssignments.entrySet()) {
+                    String key = entry.getKey(); // The key (Classroom Name)
+                    List<String> value = entry.getValue(); // The value (List of Assigned Courses)
+                    if(value.contains(course.getCourseName())){
+                        classroomNameHolder= key;
+                    }
+                }
+
+                    for (Classroom classroom : classrooms) {
+                        if (classroom.getClassroomName().equals(classroomNameHolder)) {
+                            currentClassroom=classroom;
+                        }
+                    }
+
+                String classroomName = currentClassroom.getClassroomName();
+                String capacity = (currentClassroom != null) ? String.valueOf(currentClassroom.getCapacity()) : "N/A";
                 String endTime = calculateEndTime(course.getStartTime(), course.getDurationInLectureHours());
 
-                writer.write(
-                        course.getCourseName() + ", " +
-                                classroomName + ", " +
-                                capacity + ", " +
-                                course.getDay() + ", " +
-                                course.getStartTime() + ", " +
-                                endTime + ", " +
-                                course.getLecturer() + ", " +
-                                course.getAttendance() + "\n"
-                );
+
+                writer.write(String.join("; ",
+                        course.getCourseName(),
+                        classroomName,
+                        capacity,
+                        course.getDay(),
+                        course.getStartTime(),
+                        endTime,
+                        course.getLecturer(),
+                        String.valueOf(course.getAttendance()),
+                        course.getStudents().toString()
+
+                ) + "\n");
             }
 
             writer.write("\nClassroom Assignments\n");
@@ -143,18 +174,31 @@ public class CourseManager {
         } catch (IOException e) {
             System.err.println("Error writing to the file: " + e.getMessage());
         }
-
     }
 
-    private static String calculateEndTime(String startTime, int duration) {
-        int startTimeInMinutes = convertTimeToMinutes(startTime);
-        int endTimeInMinutes = startTimeInMinutes + (duration * 45) + ((duration - 1) * 10);
 
-        int hours = endTimeInMinutes / 60;
-        int minutes = endTimeInMinutes % 60;
+    private static String calculateEndTime(String startTime, int durationInHours) {
+        // Assume startTime is in the format "HH:mm" and durationInHours is a positive integer
+        try {
+            String[] timeParts = startTime.split(":");
+            int hour = Integer.parseInt(timeParts[0]);
+            int minute = Integer.parseInt(timeParts[1]);
 
-        return String.format("%02d:%02d", hours, minutes);
+            hour += durationInHours;
+
+            // Handle overflow of hours
+            if (hour >= 24) {
+                hour -= 24;
+            }
+
+            return String.format("%02d:%02d", hour, minute);
+        } catch (Exception e) {
+            System.err.println("Error calculating end time: " + e.getMessage());
+            return "Invalid Time";
+        }
     }
+
+
 
     // Helper method to convert time to minutes
     private static int convertTimeToMinutes(String time) {
