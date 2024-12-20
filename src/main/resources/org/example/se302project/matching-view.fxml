@@ -6,8 +6,9 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<HBox prefHeight="573.0" prefWidth="784.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.MatchingController">
+<HBox prefHeight="573.0" prefWidth="784.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.se302project.MatchingController">
    <children>
        <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="574.0" prefWidth="646.0" style="-fx-border-color: #99cccc; -fx-fixed-cell-size: 30;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
            <columns>
@@ -30,9 +31,18 @@
        </TableView>
       <VBox prefHeight="400.0" prefWidth="134.0" spacing="25.0">
          <children>
-            <Button onAction="#showHelp" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Help" />
-              <Button onAction="#viewSchedules" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="View Schedules" />
-              <Button onAction="#editTable" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Edit Table" />
+            <Button onAction="#showHelp" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Help">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font></Button>
+              <Button onAction="#viewSchedules" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="View Schedules">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font></Button>
+              <Button onAction="#editTable" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Edit Table">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font></Button>
             <Button mnemonicParsing="false" onAction="#saveMatchingToCSV" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Save Matching" />
               <Button onAction="#downloadAsFile" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Download Table" />
               <Button onAction="#back" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Back" />
