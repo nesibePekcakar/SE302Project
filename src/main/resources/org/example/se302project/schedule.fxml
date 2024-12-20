@@ -45,11 +45,11 @@
         </HBox>
         <TableView fx:id="scheduleTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="378.0" prefWidth="768.0" style="-fx-border-color: #99cccc;" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="mondayColumn" prefWidth="160.0" text="Monday" />
-                <TableColumn fx:id="tuesdayColumn" prefWidth="160.0" text="Tuesday" />
-                <TableColumn fx:id="wednesdayColumn" prefWidth="160.0" text="Wednesday" />
-                <TableColumn fx:id="thursdayColumn" prefWidth="160.0" text="Thursday" />
-                <TableColumn fx:id="fridayColumn" prefWidth="160.0" text="Friday" />
+                <TableColumn fx:id="mondayColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="160.0" text="Monday" />
+                <TableColumn fx:id="tuesdayColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="160.0" text="Tuesday" />
+                <TableColumn fx:id="wednesdayColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="160.0" text="Wednesday" />
+                <TableColumn fx:id="thursdayColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="160.0" text="Thursday" />
+                <TableColumn fx:id="fridayColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="160.0" text="Friday" />
             </columns>
         </TableView>
         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="600.0" spacing="10.0" VBox.vgrow="ALWAYS">

@@ -159,7 +159,7 @@ public class MatchingController {
 
     private void writeTableDataToCSV(FileWriter writer) throws IOException {
         // Write the header row
-        writer.write("Classroom,Capacity,Attendance,Assigned Courses\n");
+        writer.write("Classroom;Capacity;Attendance;Assigned Courses\n");
 
         // Write each row of data
         for (Classroom classroom : tableView.getItems()) {
@@ -188,7 +188,7 @@ public class MatchingController {
             }
 
             // Write data in CSV format
-            writer.write(String.format("%s,%d,%d,%s\n", classroomName, capacity, attendance, assignedCourseNames));
+            writer.write(String.format("%s;%d;%d;%s\n", classroomName, capacity, attendance, assignedCourseNames));
         }
     }
 
