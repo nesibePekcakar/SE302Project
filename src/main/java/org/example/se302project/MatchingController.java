@@ -38,7 +38,7 @@ public class MatchingController {
     private TableColumn<Classroom, Integer> capacityColumn;
 
     @FXML
-    private TableColumn<Classroom, Integer> attendanceColumn;
+    private TableColumn<Classroom, String> attendanceColumn;
 
     @FXML
     private TableColumn<Classroom, String> assignedCourseColumn;
@@ -88,20 +88,27 @@ public class MatchingController {
 
         // Set the attendance column to show attendance based on the associated Course
         attendanceColumn.setCellValueFactory(cellData -> {
-            // Get the course assigned to the classroom (you may need to adjust this depending on your data model)
             String classroomName = cellData.getValue().getClassroomName();
-            String assignedCourseName = getAssignedCourseForClassroom(classroomName);  // Get assigned course name
+            List<String> assignedCourses = roomAssignments.get(classroomName);
 
-            // Now, find the Course object that matches the assigned course name
-            Course assignedCourse = getCourseByName(assignedCourseName);
-
-            // Return the attendance value from the Course object (assuming the Course class has an 'attendance' field)
-            if (assignedCourse != null) {
-                return new javafx.beans.property.SimpleIntegerProperty(assignedCourse.getAttendance()).asObject();
-            } else {
-                return new javafx.beans.property.SimpleIntegerProperty(0).asObject();  // Default if no course is assigned
+            // Prepare the attendance information in a comma-separated format
+            StringBuilder attendanceInfo = new StringBuilder();
+            if (assignedCourses != null) {
+                for (String courseName : assignedCourses) {
+                    Course course = getCourseByName(courseName);
+                    if (course != null) {
+                        if (attendanceInfo.length() > 0) {
+                            attendanceInfo.append(", ");
+                        }
+                        attendanceInfo.append(course.getAttendance());  // Append the attendance for each course
+                    }
+                }
             }
+
+            // Return the comma-separated list of attendance values
+            return new javafx.beans.property.SimpleStringProperty(attendanceInfo.toString());
         });
+
 
 
         // Set the classroom data into the table
@@ -217,7 +224,7 @@ public class MatchingController {
         showAlert("Edit Enabled", "You can now edit the lecture column directly.");
     }
 
-    private void handleClassroomAssignmentEdit(Classroom classroom, String newCourseName) {
+    /*private void handleClassroomAssignmentEdit(Classroom classroom, String newCourseName) {
         Course newCourse = getCourseByName(newCourseName);
         if (newCourse == null) {
             showAlert("Error", "The specified course does not exist.");
@@ -233,22 +240,122 @@ public class MatchingController {
             return;
         }
 
-        // Update the roomAssignments map
+        // Get the current list of assigned courses for the classroom
         String classroomName = classroom.getClassroomName();
         List<String> assignedCourses = roomAssignments.getOrDefault(classroomName, new ArrayList<>());
 
-        // Remove old course if exists
-        assignedCourses.removeIf(course -> course.equals(getAssignedCourseForClassroom(classroomName)));
+        // Remove old course (if exists) from the list of assigned courses
+        String oldCourseName = getAssignedCourseForClassroom(classroomName);
+        if (!oldCourseName.equals("Empty")) {  // Only remove if the old course is not "Empty"
+            assignedCourses.remove(oldCourseName);  // Directly modify the list
+        }
 
-        // Add new course
+        // Add new course to the list
         assignedCourses.add(newCourseName);
+
+        // Update the roomAssignments map with the modified list
         roomAssignments.put(classroomName, assignedCourses);
 
         // Refresh the table to reflect the changes
         tableView.refresh();
 
         showAlert("Success", "Classroom assignment updated successfully.");
+    }*/
+    private void handleClassroomAssignmentEdit(Classroom classroom, String newCourseName) {
+        Course newCourse = getCourseByName(newCourseName);
+        if (newCourse == null) {
+            showAlert("Error", "The specified course does not exist.");
+            tableView.refresh();
+            return;
+        }
+
+        // Check if the new course can fit in the classroom
+        if (newCourse.getAttendance() > classroom.getCapacity()) {
+            showAlert("Error", "Insufficient capacity: " +
+                    "Classroom '" + classroom.getClassroomName() +
+                    "' cannot accommodate " + newCourse.getAttendance() + " students.");
+            tableView.refresh();
+            return;
+        }
+
+        // Get the current list of assigned courses for the classroom
+        List<String> assignedCourses = roomAssignments.getOrDefault(classroom.getClassroomName(), new ArrayList<>());
+
+        // Step 1: Check for time conflicts with already assigned courses in the classroom
+        boolean conflict = false;
+        for (String assignedCourseName : assignedCourses) {
+            Course assignedCourse = getCourseByName(assignedCourseName);
+            if (assignedCourse != null && assignedCourse.getDay().equals(newCourse.getDay())) {
+                // There is a time conflict if the courses overlap
+                if (isTimeConflict(assignedCourse, newCourse)) {
+                    conflict = true;
+                    break;  // No need to check further if a conflict is found
+                }
+            }
+        }
+
+        if (conflict) {
+            showAlert("Error", "The course " + newCourseName + " cannot be assigned to " + classroom.getClassroomName() + " due to a time conflict.");
+            tableView.refresh();
+            return;  // Exit if there's a time conflict
+        }
+
+        // Step 2: Find and remove the course from its current classroom (if already assigned)
+        for (Classroom currentClassroom : classrooms) {
+            // If the new course is already assigned to a classroom
+            if (currentClassroom != classroom && currentClassroom.getClassroomName().equals(newCourse.getClassroom().getClassroomName())) {
+                // Get the current list of courses assigned to the previous classroom
+                List<String> currentAssignedCourses = roomAssignments.getOrDefault(currentClassroom.getClassroomName(), new ArrayList<>());
+                currentAssignedCourses.remove(newCourse.getCourseName());  // Remove the old course from its current classroom
+                roomAssignments.put(currentClassroom.getClassroomName(), currentAssignedCourses);  // Update the assignments
+                break;  // Exit once we've removed the course from the old classroom
+            }
+        }
+
+        // Step 3: Add the new course to the list of assigned courses for the new classroom
+        assignedCourses.add(newCourseName);
+
+        // Step 4: Update the roomAssignments map with the new list of assigned courses for the classroom
+        roomAssignments.put(classroom.getClassroomName(), assignedCourses);
+
+        // Refresh the table to reflect the changes
+        tableView.refresh();
+
+        showAlert("Success", "Classroom assignment updated successfully.");
     }
+
+    private boolean isTimeConflict(Course course1, Course course2) {
+        int startTime1 = convertTimeToMinutes(course1.getStartTime());
+        int startTime2 = convertTimeToMinutes(course2.getStartTime());
+
+        int duration1 = course1.getDurationInLectureHours() * 45; // Convert lecture hours to minutes
+        int duration2 = course2.getDurationInLectureHours() * 45;
+
+        int endTime1 = startTime1 + duration1;
+        int endTime2 = startTime2 + duration2;
+
+        return !(endTime1 <= startTime2 || endTime2 <= startTime1);  // Return true if there's a conflict
+    }
+    private int convertTimeToMinutes(String time) {
+        // Split the time string into hours, minutes, and AM/PM parts
+        String[] timeParts = time.split(":");
+
+        // Get the hours and minutes parts from the time string
+        int hours = Integer.parseInt(timeParts[0]);
+        int minutes = Integer.parseInt(timeParts[1].substring(0, 2));
+        String ampm = timeParts[1].substring(2); // AM or PM part
+
+        // Adjust for 12-hour clock format
+        if (ampm.equals("PM") && hours < 12) {
+            hours += 12;  // Convert PM times (except 12 PM) to 24-hour format
+        } else if (ampm.equals("AM") && hours == 12) {
+            hours = 0;  // Convert 12 AM to 0 hours (midnight)
+        }
+
+        // Calculate the total time in minutes since midnight
+        return hours * 60 + minutes;
+    }
+
 
     // Method to retrieve the assigned course for a given classroom
     public void viewSchedules(ActionEvent event) {
