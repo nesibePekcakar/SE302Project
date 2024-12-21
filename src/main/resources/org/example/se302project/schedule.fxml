@@ -62,7 +62,7 @@
                 <Button mnemonicParsing="false" onAction="#addCourse" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Add Course" />
                 <Button mnemonicParsing="false" onAction="#addStudent" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Add Student" />
                 <Button mnemonicParsing="false" onAction="#showStudents" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Show Students" />
-                <Button mnemonicParsing="false" onAction="#removeStudentFromCourse" style="-fx-background-color: #ffcccc; -fx-background-radius: 20;" text="Remove Student" />
+                <Button mnemonicParsing="false" onAction="#removeStudentFromCourse" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Remove Student" />
 
                 <Button mnemonicParsing="false" onAction="#goBack" style="-fx-background-color: #99cccc; -fx-background-radius: 20;" text="Back" />
             </children>
