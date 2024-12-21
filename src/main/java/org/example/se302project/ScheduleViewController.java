@@ -590,6 +590,9 @@ public class ScheduleViewController {
 
 
 
+
+
+
     public void removeStudentFromCourse() {
         System.out.println("Removing a student from a course...");
 
