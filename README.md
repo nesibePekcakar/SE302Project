@@ -6,6 +6,8 @@
  ![image](https://github.com/user-attachments/assets/4fd8bbc1-cf45-4bb7-9e25-4dd416bc68de)
  Using Classroom Assingment App Interface;
  Enter two csv files to generate schedule table.
+ ![image](https://github.com/user-attachments/assets/8b835152-53da-4265-80f9-bcd2c72a649f)
+
  
  
 
