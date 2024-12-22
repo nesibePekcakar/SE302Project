@@ -16,35 +16,35 @@ FEATURES
 
 1. Classroom Selection
 
-Select a classroom from the dropdown menu to view its schedule.
+-Select a classroom from the dropdown menu to view its schedule.
 
 2. Student Management
 
-Add Student: Add a new student to the system.
+-Add Student: Add a new student to the system.
 
-Show Students: Display a list of all students.
+-Show Students: Display a list of all students.
 
-Remove Student: Remove a selected student from the system.
+-Remove Student: Remove a selected student from the system.
 
-Student dropdown allows filtering schedules for a specific student.
+-Student dropdown allows filtering schedules for a specific student.
 
 3. Timetable Management
 
-The weekly timetable displays time slots for each day (Monday to Friday).
+-The weekly timetable displays time slots for each day (Monday to Friday).
 
-View assigned courses in specific time slots (e.g., "SE380" at 14:00 on Monday).
+-View assigned courses in specific time slots (e.g., "SE380" at 14:00 on Monday).
 
-Add Course: Add new courses to the schedule.
+-Add Course: Add new courses to the schedule.
 
 4. Exporting and Help Options
 
-Download: Export the schedule or data for sharing or documentation.
+-Download: Export the schedule or data for sharing or documentation.
 
-Help: Access guidance on using the system.
+-Help: Access guidance on using the system.
 
 5. Navigation
 
-Back: Return to the previous page or the main menu.
+-Back: Return to the previous page or the main menu.
 
 
 
@@ -55,15 +55,17 @@ Back: Return to the previous page or the main menu.
 SYSTEM REQUIREMENTS / NOTES
 
 
- Project is built in Intellij using Maven.
+ -Project is built in Intellij using Maven.
 
- Operating System: Windows. The program is currently compatible to be compiled only on Windows.
+ -Operating System: Windows. The program is currently compatible to be compiled only on Windows.
  
- Internet Connection: Not required.
+ -Internet Connection: Not required.
  
- JDK-21-corretto
+ -JDK-21-corretto
  
- JavaFx-sdk-23.0.1
+ -JavaFx-sdk-23.0.1
+
+ 
 
  INSTALLATION
 
