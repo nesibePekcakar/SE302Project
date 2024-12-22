@@ -57,7 +57,7 @@ public class ScheduleViewController {
     private List<Course> courses = cm.ReadCourses(cm.getCoursesFilePath());
     private Map<String, List<String>> matching = cm.readMatching(cm.getMatchingFilePath());
     private String selectedCourseName = "";
-    String push = "";
+    String push = "push";
 
     @FXML
     public void initialize() {
