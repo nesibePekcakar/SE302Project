@@ -117,7 +117,7 @@
                             <transformers>
                                 <transformer implementation=
                                                      "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.example.se302project/org.example.se302project.Main</mainClass>
+                                    <mainClass>org.example.se302project.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -133,7 +133,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.se302project/org.example.se302project.Main</mainClass>
+                            <mainClass>org.example.se302project.Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
