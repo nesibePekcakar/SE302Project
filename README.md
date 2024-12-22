@@ -56,9 +56,13 @@ SYSTEM REQUIREMENTS / NOTES
 
 
  Project is built in Intellij using Maven.
+
  Operating System: Windows. The program is currently compatible to be compiled only on Windows.
+ 
  Internet Connection: Not required.
+ 
  JDK-21-corretto
+ 
  JavaFx-sdk-23.0.1
  
 
@@ -68,7 +72,9 @@ Contact
 For any questions or suggestions, feel free to reach out:
 
 GitHub: 
+
 https://github.com/nesibePekcakar
+
 https://github.com/Elifsudeozmen
 
  
