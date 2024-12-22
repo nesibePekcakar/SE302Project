@@ -5,13 +5,13 @@
  connection. The software app will be distributed as an executable file for systems that have Windows operating system.
  ![image](https://github.com/user-attachments/assets/4fd8bbc1-cf45-4bb7-9e25-4dd416bc68de)
  Using Classroom Assingment App Interface;
- Enter two csv files to generate schedule table.
+
+ Enter two csv files for informations to be read and parse in the app. Classroom and Lecture informations will be displayed in this format below. 
+ 
  ![image](https://github.com/user-attachments/assets/8b835152-53da-4265-80f9-bcd2c72a649f)
 
- 
- 
+ ![image](https://github.com/user-attachments/assets/c8b4e103-2174-48fa-9e39-ccd782c87991)
 
- 
 FEATURES
 
 1. Classroom Selection
@@ -47,27 +47,9 @@ Help: Access guidance on using the system.
 Back: Return to the previous page or the main menu.
 
 
-HOW TO USE
 
--Viewing a Schedule
 
-Select a classroom from the dropdown menu to load its timetable. Optionally, select a student to view their schedule. Check the displayed timetable for course information.
 
--Adding or Removing Entries
-
-Add Course: Use this button to schedule a new course.
-
-Add Student: Add new students to the database.
-
-Remove Student: Remove existing students from the system.
-
--Export Data
-
-Click "Download" to export the schedule or student/course data.
-
--Get Help
-
-Use the "Help" button for instructions or troubleshooting.
 
 
 SYSTEM REQUIREMENTS / NOTES
