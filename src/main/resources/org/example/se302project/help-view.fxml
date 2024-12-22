@@ -12,7 +12,7 @@
          <font>
             <Font name="Trebuchet MS Bold" size="13.0" />
          </font></TextArea>
-        <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="39.0" prefWidth="86.0" style="-fx-background-color: #ffff; -fx-background-radius: 20;" text="Back" textAlignment="CENTER" VBox.vgrow="ALWAYS" />
+        <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#back" prefHeight="39.0" prefWidth="86.0" style="-fx-background-color: #ffff; -fx-background-radius: 20;" text="Back" textAlignment="CENTER" VBox.vgrow="ALWAYS" />
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
