@@ -64,10 +64,15 @@ SYSTEM REQUIREMENTS / NOTES
  JDK-21-corretto
  
  JavaFx-sdk-23.0.1
+
+ INSTALLATION
+
+ Use .exe file to install the app with only two clicks.
+ 
  
 
 
-Contact
+Contact:
 
 For any questions or suggestions, feel free to reach out:
 
